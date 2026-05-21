@@ -319,7 +319,7 @@ def scrape_fuels():
     STOOQ = {
         "WTI_OIL": "cl.f",
         "BRENT_OIL": "cb.f",
-        "NATGAS": "ng.f",
+        "NATGAS": "tg.f",
         "CO2": "ev.f",
         "COAL": "lu.f"
 
