@@ -305,78 +305,68 @@ def generate_summary():
 
 # POLTTOAINETESTI
 def scrape_fuels():
+
     import requests
-
-    TICKERS = {
-        "WTI": "CL=F",
-        "BRENT": "BZ=F",
-        "TTF": "TTF=F",
-        "CO2": "CO2.L",
-        "COAL": "MTF=F"
-    }
-
-    url = "https://query1.finance.yahoo.com/v7/finance/quote"
 
     today = datetime.utcnow().strftime("%Y-%m-%d")
 
-    rows = []
+    # ✅ Investing instrument IDs
+    # (nämä ovat stabiileja)
+    INSTRUMENTS = {
+        "WTI": "8849",
+        "BRENT": "8830",
+        "TTF": "8827",
+        "CO2": "9810",
+        "COAL": "8916"
+    }
 
-    symbols = ",".join(TICKERS.values())
-
-    print(f"\n🔎 Hakee fuels: {symbols}")
+    url = "https://api.investing.com/api/financialdata/prices/get"
 
     headers = {
         "User-Agent": "Mozilla/5.0"
     }
 
-    response = requests.get(url, params={"symbols": symbols}, headers=headers)
+    rows = []
 
-    # ✅ Tarkistus
-    if response.status_code != 200:
-        print(f"❌ Yahoo HTTP error: {response.status_code}")
+    for name, inst_id in INSTRUMENTS.items():
+
+        print(f"🔎 Hakee {name}")
+
+        params = {
+            "instrumentId": inst_id,
+            "timeFrame": "P1D"
+        }
+
+        try:
+            r = requests.get(url, params=params, headers=headers)
+
+            if r.status_code != 200:
+                print(f"⚠️ {name} HTTP {r.status_code}")
+                continue
+
+            data = r.json()
+
+            price = data["last"]
+
+            rows.append([
+                name,
+                inst_id,
+                price,
+                None,
+                today
+            ])
+
+        except Exception as e:
+            print(f"⚠️ {name} fail: {e}")
+
+    if not rows:
+        print("❌ fuels ei saatu")
         return
-
-    text = response.text.strip()
-
-    # ✅ Varmista että on JSON
-    if not text.startswith("{"):
-        print("⚠️ Yahoo ei palauttanut JSONia")
-        print(text[:200])
-        return
-
-    try:
-        data = response.json()
-    except:
-        print("❌ JSON parsing epäonnistui")
-        print(text[:200])
-        return
-
-    quotes = data.get("quoteResponse", {}).get("result", [])
-
-    if not quotes:
-        print("⚠️ Ei fuel-dataa")
-        return
-
-    for q in quotes:
-        symbol = q.get("symbol")
-
-        name = next((k for k, v in TICKERS.items() if v == symbol), symbol)
-
-        price = q.get("regularMarketPrice")
-        change = q.get("regularMarketChange")
-
-        rows.append([
-            name,
-            symbol,
-            price,
-            change,
-            today
-        ])
 
     # ✅ latest
     with open("latest_fuels.csv", "w", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(["Product", "Symbol", "Price", "Change", "Date"])
+        writer.writerow(["Product", "Instrument", "Price", "Change", "Date"])
         writer.writerows(rows)
 
     # ✅ historical
@@ -386,11 +376,12 @@ def scrape_fuels():
         writer = csv.writer(f)
 
         if not file_exists:
-            writer.writerow(["Product", "Symbol", "Price", "Change", "Date"])
+            writer.writerow(["Product", "Instrument", "Price", "Change", "Date"])
 
         writer.writerows(rows)
 
-    print("✅ fuels data päivitetty")
+    print("✅ fuels (real sources) päivitetty")
+
 
 # =============================
 # RUN
