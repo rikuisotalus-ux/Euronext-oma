@@ -353,6 +353,66 @@ def calculate_spark_spread():
         f.write(top[["ProductCode", "Settl.", "SparkSpread"]].to_string(index=False))
 
     print("✅ Spark spread laskettu")
+def calculate_dark_spread():
+
+    import pandas as pd
+
+    try:
+        power = pd.read_csv("latest_settlement.csv")
+        fuels = pd.read_csv("latest_fuels.csv")
+    except:
+        print("❌ Ei dataa dark spreadiin")
+        return
+
+    # =============================
+    # ✅ CLEAN POWER
+    # =============================
+    power["Settl."] = power["Settl."].astype(str)
+    power["Settl."] = power["Settl."].str.replace(",", "", regex=False)
+    power["Settl."] = power["Settl."].replace("-", None)
+    power["Settl."] = pd.to_numeric(power["Settl."], errors="coerce")
+
+    power = power.dropna(subset=["Settl.", "ProductCode"])
+
+    # =============================
+    # ✅ HAE COAL + CO2
+    # =============================
+    fuels["Price"] = pd.to_numeric(fuels["Price"], errors="coerce")
+
+    coal_row = fuels[fuels["Product"] == "COAL"]
+    co2_row = fuels[fuels["Product"] == "CO2"]
+
+    if coal_row.empty or co2_row.empty:
+        print("⚠️ Coal tai CO2 puuttuu")
+        return
+
+    coal_price = coal_row["Price"].iloc[0]
+    co2_price = co2_row["Price"].iloc[0]
+
+    if pd.isna(coal_price) or pd.isna(co2_price):
+        print("⚠️ Coal/CO2 arvo puuttuu")
+        return
+
+    print(f"✅ Coal price: {coal_price}")
+    print(f"✅ CO2 price: {co2_price}")
+
+    # =============================
+    # ✅ DARK SPREAD
+    # =============================
+    power["DarkSpread"] = power["Settl."] - (coal_price + co2_price)
+
+    top = power.sort_values("DarkSpread", ascending=False).head(10)
+
+    # =============================
+    # ✅ WRITE
+    # =============================
+    with open("dark_spread.txt", "w") as f:
+        f.write("Dark Spread (Power - Coal - CO2)\n\n")
+        f.write(f"Coal price: {coal_price}\n")
+        f.write(f"CO2 price: {co2_price}\n\n")
+        f.write(top[["ProductCode", "Settl.", "DarkSpread"]].to_string(index=False))
+
+    print("✅ Dark spread laskettu")
 
 # POLTTOAINETESTI
 
@@ -451,3 +511,4 @@ if __name__ == "__main__":
     generate_reports()
     generate_summary()
     calculate_spark_spread()
+    calculate_dark_spread()
