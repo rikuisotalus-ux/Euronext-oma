@@ -305,14 +305,14 @@ def generate_summary():
 
 # POLTTOAINETESTI
 def scrape_fuels():
-
     import requests
 
     TICKERS = {
         "WTI": "CL=F",
         "BRENT": "BZ=F",
         "TTF": "TTF=F",
-        "CO2": "CO2.L"
+        "CO2": "CO2.L",
+        "COAL": "MTF=F"
     }
 
     url = "https://query1.finance.yahoo.com/v7/finance/quote"
@@ -323,15 +323,44 @@ def scrape_fuels():
 
     symbols = ",".join(TICKERS.values())
 
-    response = requests.get(url, params={"symbols": symbols})
-    data = response.json()
+    print(f"\n🔎 Hakee fuels: {symbols}")
 
-    quotes = data["quoteResponse"]["result"]
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
+
+    response = requests.get(url, params={"symbols": symbols}, headers=headers)
+
+    # ✅ Tarkistus
+    if response.status_code != 200:
+        print(f"❌ Yahoo HTTP error: {response.status_code}")
+        return
+
+    text = response.text.strip()
+
+    # ✅ Varmista että on JSON
+    if not text.startswith("{"):
+        print("⚠️ Yahoo ei palauttanut JSONia")
+        print(text[:200])
+        return
+
+    try:
+        data = response.json()
+    except:
+        print("❌ JSON parsing epäonnistui")
+        print(text[:200])
+        return
+
+    quotes = data.get("quoteResponse", {}).get("result", [])
+
+    if not quotes:
+        print("⚠️ Ei fuel-dataa")
+        return
 
     for q in quotes:
-        symbol = q["symbol"]
+        symbol = q.get("symbol")
 
-        name = [k for k, v in TICKERS.items() if v == symbol][0]
+        name = next((k for k, v in TICKERS.items() if v == symbol), symbol)
 
         price = q.get("regularMarketPrice")
         change = q.get("regularMarketChange")
@@ -344,13 +373,13 @@ def scrape_fuels():
             today
         ])
 
-    # ✅ latest fuels
+    # ✅ latest
     with open("latest_fuels.csv", "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["Product", "Symbol", "Price", "Change", "Date"])
         writer.writerows(rows)
 
-    # ✅ historical fuels
+    # ✅ historical
     file_exists = os.path.isfile("historical_fuels.csv")
 
     with open("historical_fuels.csv", "a", newline="") as f:
@@ -362,12 +391,19 @@ def scrape_fuels():
         writer.writerows(rows)
 
     print("✅ fuels data päivitetty")
+
 # =============================
 # RUN
 # =============================
 if __name__ == "__main__":
     headers, rows = scrape_api()
     write_files(headers, rows)
-    scrape_fuels()        # POLTTOAINETESTI
+    
+
+    try:
+        scrape_fuels()
+    except Exception as e:
+        print(f"⚠️ fuels epäonnistui mutta jatketaan: {e}")
+
     generate_reports()
     generate_summary()
