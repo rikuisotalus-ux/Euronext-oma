@@ -318,7 +318,7 @@ def scrape_fuels():
     # =============================
     STOOQ = {
         "WTI_OIL": "cl.f",
-        "BRENT_OIL": "brn.f"
+        "BRENT_OIL": "brn.f",
         "NATGAS": "ng.f"
 
     }
