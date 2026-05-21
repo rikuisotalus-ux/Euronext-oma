@@ -494,7 +494,56 @@ def scrape_fuels():
         writer.writerows(rows)
 
     print("✅ fuels (HYBRID) päivitetty")
+def generate_market_analysis():
 
+    # =============================
+    # ✅ lue tiedostot
+    # =============================
+    try:
+        with open("market_summary.txt", "r") as f:
+            summary = f.read()
+    except:
+        summary = "Ei summary dataa.\n"
+
+    try:
+        with open("spark_spread.txt", "r") as f:
+            spark = f.read()
+    except:
+        spark = "Ei spark spread dataa.\n"
+
+    try:
+        with open("dark_spread.txt", "r") as f:
+            dark = f.read()
+    except:
+        dark = "Ei dark spread dataa.\n"
+
+    # =============================
+    # ✅ yhdistä raportti
+    # =============================
+    report = []
+
+    report.append("MARKET ANALYSIS\n")
+    report.append("=" * 50 + "\n\n")
+
+    report.append("Power Market Summary\n")
+    report.append("-" * 30 + "\n")
+    report.append(summary + "\n\n")
+
+    report.append("Spark Spread (Gas-based)\n")
+    report.append("-" * 30 + "\n")
+    report.append(spark + "\n\n")
+
+    report.append("Dark Spread (Coal-based)\n")
+    report.append("-" * 30 + "\n")
+    report.append(dark + "\n")
+
+    # =============================
+    # ✅ write file
+    # =============================
+    with open("market_analysis.txt", "w") as f:
+        f.write("".join(report))
+
+    print("✅ Yhdistetty market report luotu!")
 # =============================
 # RUN
 # =============================
@@ -512,3 +561,4 @@ if __name__ == "__main__":
     generate_summary()
     calculate_spark_spread()
     calculate_dark_spread()
+    generate_market_analysis()
