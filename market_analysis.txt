@@ -10,7 +10,7 @@ Suurimmat nousijat:
 
 Suurimmat laskijat:
 
-Viikkotrendi: markkina on keskimäärin laskutrendissä.
+Viikkotrendi: markkina on keskimäärin nousutrendissä.
 
 
 Spark Spread (Gas-based)
@@ -20,16 +20,16 @@ Spark Spread (Power - Gas)
 Gas price: 49.425
 
 ProductCode  Settl.  SparkSpread
-   NSBQ1-27   80.95       31.525
- NSBMMAY-26   77.00       27.575
- NSBMNOV-26   76.85       27.425
-   NSBQ4-26   75.75       26.325
-   NSBQ1-28   68.78       19.355
- NSBMOCT-26   65.00       15.575
- NSBMSEP-26   64.50       15.075
- NSBMJUN-26   57.89        8.465
-   NSBQ3-26   57.30        7.875
- NSBMAUG-26   56.50        7.075
+   NSBQ1-27   81.25       31.825
+ NSBMNOV-26   77.25       27.825
+   NSBQ4-26   76.35       26.925
+ NSBMMAY-26   75.75       26.325
+   NSBQ1-28   68.12       18.695
+ NSBMSEP-26   65.25       15.825
+ NSBMOCT-26   65.25       15.825
+ NSBMJUN-26   58.83        9.405
+   NSBQ3-26   57.97        8.545
+ NSBMAUG-26   57.05        7.625
 
 Dark Spread (Coal-based)
 ------------------------------
@@ -39,13 +39,13 @@ Coal price: 121.95
 CO2 price: 75.4
 
 ProductCode  Settl.  DarkSpread
-   NSBQ1-27   80.95     -116.40
- NSBMMAY-26   77.00     -120.35
- NSBMNOV-26   76.85     -120.50
-   NSBQ4-26   75.75     -121.60
-   NSBQ1-28   68.78     -128.57
- NSBMOCT-26   65.00     -132.35
- NSBMSEP-26   64.50     -132.85
- NSBMJUN-26   57.89     -139.46
-   NSBQ3-26   57.30     -140.05
- NSBMAUG-26   56.50     -140.85
+   NSBQ1-27   81.25     -116.10
+ NSBMNOV-26   77.25     -120.10
+   NSBQ4-26   76.35     -121.00
+ NSBMMAY-26   75.75     -121.60
+   NSBQ1-28   68.12     -129.23
+ NSBMSEP-26   65.25     -132.10
+ NSBMOCT-26   65.25     -132.10
+ NSBMJUN-26   58.83     -138.52
+   NSBQ3-26   57.97     -139.38
+ NSBMAUG-26   57.05     -140.30
