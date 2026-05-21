@@ -373,23 +373,23 @@ def scrape_fuels():
                 print(f"🔎 Hakee {name} (TradingEconomics)")
 
                 try:
-                url = f"https://tradingeconomics.com/{slug}"
-                r = requests.get(url, headers=headers)
+                    url = f"https://tradingeconomics.com/{slug}"
+                    r = requests.get(url, headers=headers)
 
-                text = r.text
+                    text = r.text
 
-                # ✅ uusi parseri
-                match = re.search(r'id="p">([\d\.,]+)<', text)
+                    # ✅ uusi parseri
+                    match = re.search(r'id="p">([\d\.,]+)<', text)
 
-                if match:
-                    price = match.group(1).replace(",", "")
-                else:
-                    price = None
+                    if match:
+                        price = match.group(1).replace(",", "")
+                    else:
+                        price = None
 
-                rows.append([name, slug, price, None, today])
+                    rows.append([name, slug, price, None, today])
 
-            except Exception as e:
-                print(f"⚠️ {name} fail: {e}")
+                except Exception as e:
+                    print(f"⚠️ {name} fail: {e}")
 
 
     # =============================
