@@ -308,6 +308,7 @@ def generate_summary():
 def scrape_fuels():
 
     import requests
+    import re
 
     today = datetime.utcnow().strftime("%Y-%m-%d")
     rows = []
@@ -365,42 +366,27 @@ def scrape_fuels():
 
             text = r.text
 
-            # ✅ etsitään price HTML:stä
-            import re
-            
-            for name, slug in TE.items():
+            match = re.search(r'id="p">([\d\.,]+)<', text)
 
-                print(f"🔎 Hakee {name} (TradingEconomics)")
+            if match:
+                price = match.group(1).replace(",", "")
+            else:
+                price = None
 
-                try:
-                    url = f"https://tradingeconomics.com/{slug}"
-                    r = requests.get(url, headers=headers)
+            rows.append([name, slug, price, None, today])
 
-                    text = r.text
-
-                    # ✅ uusi parseri
-                    match = re.search(r'id="p">([\d\.,]+)<', text)
-
-                    if match:
-                        price = match.group(1).replace(",", "")
-                    else:
-                        price = None
-
-                    rows.append([name, slug, price, None, today])
-
-                except Exception as e:
-                    print(f"⚠️ {name} fail: {e}")
-
+        except Exception as e:
+            print(f"⚠️ {name} fail: {e}")
 
     # =============================
-    # ✅ FALLBACK (jos kaikki failaa)
+    # ✅ FALLBACK
     # =============================
     if not rows:
         print("❌ fuels ei saatu – fallback")
 
         rows = [
             ["WTI", "cl.f", None, None, today],
-            ["BRENT", "brn.f", None, None, today],
+            ["BRENT", "b.f", None, None, today],
             ["TTF", "european-natural-gas", None, None, today],
             ["CO2", "carbon", None, None, today],
             ["COAL", "coal", None, None, today],
@@ -410,13 +396,11 @@ def scrape_fuels():
     # ✅ WRITE CSV
     # =============================
 
-    # latest
     with open("latest_fuels.csv", "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["Product", "Symbol", "Price", "Change", "Date"])
         writer.writerows(rows)
 
-    # historical
     file_exists = os.path.isfile("historical_fuels.csv")
 
     with open("historical_fuels.csv", "a", newline="") as f:
@@ -428,7 +412,6 @@ def scrape_fuels():
         writer.writerows(rows)
 
     print("✅ fuels (HYBRID) päivitetty")
-
 
 # =============================
 # RUN
