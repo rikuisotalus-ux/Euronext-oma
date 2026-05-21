@@ -190,8 +190,8 @@ def generate_reports():
     weekly_avg = week_df.groupby("ProductCode")["Settl."].mean().reset_index()
     weekly_latest = today_df[["ProductCode", "Settl."]]
 
-    weekly = pd.merge(weekly_latest, weekly_avg, on="ProductCode")
-    weekly["Trend"] = weekly["Settl."] - weekly["Settl._y"]
+    weekly = pd.merge(weekly_latest, weekly_avg, on="ProductCode",suffixes=("_latest", "_avg"))
+    weekly["Trend"] = weekly["Settl._latest"] - weekly["Settl._avg"]
 
     weekly_report = weekly.sort_values("Trend", ascending=False).head(10)
 
