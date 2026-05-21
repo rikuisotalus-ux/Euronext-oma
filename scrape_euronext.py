@@ -360,8 +360,17 @@ def scrape_fuels():
             print(f"⚠️ {name} fail: {e}")
 
     if not rows:
-        print("❌ fuels ei saatu")
-        return
+    print("❌ fuels ei saatu – käytetään fallback-dataa")
+
+    today = datetime.utcnow().strftime("%Y-%m-%d")
+
+    rows = [
+        ["WTI", "ICE", None, None, today],
+        ["BRENT", "ICE", None, None, today],
+        ["TTF", "ICE", None, None, today],
+        ["CO2", "ICE", None, None, today],
+        ["COAL", "ICE", None, None, today],
+    ]
 
     # ✅ latest
     with open("latest_fuels.csv", "w", newline="") as f:
