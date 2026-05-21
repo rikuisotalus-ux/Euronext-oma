@@ -301,7 +301,58 @@ def generate_summary():
         f.write("".join(text))
 
     print("✅ Copilot summary luotu!")
+def calculate_spark_spread():
 
+    import pandas as pd
+
+    try:
+        power = pd.read_csv("latest_settlement.csv")
+        fuels = pd.read_csv("latest_fuels.csv")
+    except:
+        print("❌ Ei dataa spreadiin")
+        return
+
+    # =============================
+    # ✅ CLEAN POWER
+    # =============================
+    power["Settl."] = power["Settl."].astype(str)
+    power["Settl."] = power["Settl."].str.replace(",", "", regex=False)
+    power["Settl."] = power["Settl."].replace("-", None)
+    power["Settl."] = pd.to_numeric(power["Settl."], errors="coerce")
+
+    power = power.dropna(subset=["Settl.", "ProductCode"])
+
+    # =============================
+    # ✅ HAE GAS
+    # =============================
+    fuels["Price"] = pd.to_numeric(fuels["Price"], errors="coerce")
+
+    gas_row = fuels[fuels["Product"] == "NATGAS"]
+
+    if gas_row.empty or pd.isna(gas_row["Price"].iloc[0]):
+        print("⚠️ Gas price puuttuu")
+        return
+
+    gas_price = gas_row["Price"].iloc[0]
+
+    print(f"✅ Gas price käytössä: {gas_price}")
+
+    # =============================
+    # ✅ SPARK
+    # =============================
+    power["SparkSpread"] = power["Settl."] - gas_price
+
+    top = power.sort_values("SparkSpread", ascending=False).head(10)
+
+    # =============================
+    # ✅ WRITE
+    # =============================
+    with open("spark_spread.txt", "w") as f:
+        f.write("Spark Spread (Power - Gas)\n\n")
+        f.write(f"Gas price: {gas_price}\n\n")
+        f.write(top[["ProductCode", "Settl.", "SparkSpread"]].to_string(index=False))
+
+    print("✅ Spark spread laskettu")
 
 # POLTTOAINETESTI
 
@@ -399,3 +450,4 @@ if __name__ == "__main__":
 
     generate_reports()
     generate_summary()
+    calculate_spark_spread()
