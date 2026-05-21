@@ -203,7 +203,104 @@ def generate_reports():
         f.write(weekly_report.to_string(index=False))
 
     print("✅ Raportit luotu")
+def generate_summary():
+    import pandas as pd
 
+    try:
+        df = pd.read_csv("historical_settlement.csv")
+    except:
+        print("❌ Ei dataa summaryyn")
+        return
+
+    df["Settl."] = df["Settl."].astype(str)
+    df["Settl."] = df["Settl."].str.replace(",", "", regex=False)
+    df["Settl."] = df["Settl."].replace("-", None)
+    df["Settl."] = pd.to_numeric(df["Settl."], errors="coerce")
+
+    df = df.dropna(subset=["Settl."])
+    df["Date"] = pd.to_datetime(df["Date"])
+
+    today = df["Date"].max()
+    yesterday = today - pd.Timedelta(days=1)
+
+    today_df = df[df["Date"] == today]
+    yest_df = df[df["Date"] == yesterday]
+
+    # merge daily change
+    merged = pd.merge(
+        today_df,
+        yest_df,
+        on="ProductCode",
+        suffixes=("_today", "_yesterday"),
+        how="left"
+    )
+
+    merged["Change"] = merged["Settl._today"] - merged["Settl._yesterday"]
+
+    # isoimmat liikkeet
+    biggest_up = merged.sort_values("Change", ascending=False).head(3)
+    biggest_down = merged.sort_values("Change").head(3)
+
+    # valitaan yksi esimerkkituote (front)
+    main = merged.dropna().head(1)
+
+    # =============================
+    # TEKSTI
+    # =============================
+    text = []
+    text.append("Päivittäinen markkinakatsaus:\n")
+    text.append("Pohjoismaiset sähköfutuurit liikkuivat tänään vaihtelevasti.\n")
+
+    # front month
+    if not main.empty:
+        row = main.iloc[0]
+        text.append(
+            f"Lähituote {row['ProductCode']} "
+            f"{row['Settl._today']:.2f} EUR/MWh "
+            f"({row['Change']:+.2f}).\n"
+        )
+
+    # nousijat
+    text.append("\nSuurimmat nousijat:\n")
+    for _, r in biggest_up.iterrows():
+        if pd.notna(r["Change"]):
+            text.append(f"- {r['ProductCode']}: {r['Change']:+.2f}\n")
+
+    # laskijat
+    text.append("\nSuurimmat laskijat:\n")
+    for _, r in biggest_down.iterrows():
+        if pd.notna(r["Change"]):
+            text.append(f"- {r['ProductCode']}: {r['Change']:+.2f}\n")
+
+    # viikon trendi
+    week_df = df[df["Date"] >= today - pd.Timedelta(days=7)]
+    avg = week_df.groupby("ProductCode")["Settl."].mean().reset_index()
+    latest = today_df[["ProductCode", "Settl."]]
+
+    weekly = pd.merge(
+        latest,
+        avg,
+        on="ProductCode",
+        suffixes=("_latest", "_avg")
+    )
+
+    weekly["Trend"] = weekly["Settl._latest"] - weekly["Settl._avg"]
+
+    trend_mean = weekly["Trend"].mean()
+
+    text.append("\nViikkotrendi: ")
+    if trend_mean > 0:
+        text.append("markkina on keskimäärin nousutrendissä.\n")
+    elif trend_mean < 0:
+        text.append("markkina on keskimäärin laskutrendissä.\n")
+    else:
+        text.append("markkina on sivuttaisliikkeessä.\n")
+
+    # write file
+    with open("market_summary.txt", "w") as f:
+        f.write("".join(text))
+
+    print("✅ Copilot summary luotu!")
 
 # =============================
 # RUN
@@ -212,3 +309,4 @@ if __name__ == "__main__":
     headers, rows = scrape_api()
     write_files(headers, rows)
     generate_reports()
+    generate_summary()
