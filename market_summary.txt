@@ -5,4 +5,4 @@ Suurimmat nousijat:
 
 Suurimmat laskijat:
 
-Viikkotrendi: markkina on keskimäärin nousutrendissä.
+Viikkotrendi: markkina on keskimäärin laskutrendissä.
