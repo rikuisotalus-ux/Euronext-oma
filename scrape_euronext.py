@@ -305,52 +305,52 @@ def generate_summary():
 
 # POLTTOAINETESTI
 def scrape_fuels():
-
     import requests
 
     today = datetime.utcnow().strftime("%Y-%m-%d")
 
-    # ✅ Investing instrument IDs
-    # (nämä ovat stabiileja)
-    INSTRUMENTS = {
-        "WTI": "8849",
-        "BRENT": "8830",
-        "TTF": "8827",
-        "CO2": "9810",
-        "COAL": "8916"
-    }
-
-    url = "https://api.investing.com/api/financialdata/prices/get"
-
-    headers = {
-        "User-Agent": "Mozilla/5.0"
+    SYMBOLS = {
+        "WTI": "crude_oil",
+        "BRENT": "brent",
+        "TTF": "natgas_eu",
+        "CO2": "co2_eua",
+        "COAL": "coal_api2"
     }
 
     rows = []
 
-    for name, inst_id in INSTRUMENTS.items():
+    for name, symbol in SYMBOLS.items():
 
-        print(f"🔎 Hakee {name}")
+        url = f"https://stooq.com/q/l/?s={symbol}&f=sd2t2ohlcv&h&e=csv"
 
-        params = {
-            "instrumentId": inst_id,
-            "timeFrame": "P1D"
-        }
+        print(f"🔎 Hakee {name} (Stooq)")
 
         try:
-            r = requests.get(url, params=params, headers=headers)
+            r = requests.get(url)
 
             if r.status_code != 200:
                 print(f"⚠️ {name} HTTP {r.status_code}")
                 continue
 
-            data = r.json()
+            text = r.text.splitlines()
 
-            price = data["last"]
+            if len(text) < 2:
+                print(f"⚠️ {name} ei dataa")
+                continue
+
+            # header + yksi rivi
+            data = text[1].split(",")
+
+            # Close price
+            price = data[6] if len(data) > 6 else None
+
+            # jos empty
+            if price == "":
+                price = None
 
             rows.append([
                 name,
-                inst_id,
+                symbol,
                 price,
                 None,
                 today
@@ -359,23 +359,22 @@ def scrape_fuels():
         except Exception as e:
             print(f"⚠️ {name} fail: {e}")
 
+    # ✅ fallback jos kaikki failaa (very unlikely)
     if not rows:
-    print("❌ fuels ei saatu – käytetään fallback-dataa")
+        print("❌ fuels ei saatu – fallback")
 
-    today = datetime.utcnow().strftime("%Y-%m-%d")
-
-    rows = [
-        ["WTI", "ICE", None, None, today],
-        ["BRENT", "ICE", None, None, today],
-        ["TTF", "ICE", None, None, today],
-        ["CO2", "ICE", None, None, today],
-        ["COAL", "ICE", None, None, today],
-    ]
+        rows = [
+            ["WTI", "crude_oil", None, None, today],
+            ["BRENT", "brent", None, None, today],
+            ["TTF", "natgas_eu", None, None, today],
+            ["CO2", "co2_eua", None, None, today],
+            ["COAL", "coal_api2", None, None, today],
+        ]
 
     # ✅ latest
     with open("latest_fuels.csv", "w", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(["Product", "Instrument", "Price", "Change", "Date"])
+        writer.writerow(["Product", "Symbol", "Price", "Change", "Date"])
         writer.writerows(rows)
 
     # ✅ historical
@@ -385,11 +384,12 @@ def scrape_fuels():
         writer = csv.writer(f)
 
         if not file_exists:
-            writer.writerow(["Product", "Instrument", "Price", "Change", "Date"])
+            writer.writerow(["Product", "Symbol", "Price", "Change", "Date"])
 
         writer.writerows(rows)
 
-    print("✅ fuels (real sources) päivitetty")
+    print("✅ fuels (STOOQ) päivitetty")
+
 
 
 # =============================
