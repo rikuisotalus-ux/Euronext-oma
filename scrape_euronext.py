@@ -318,8 +318,10 @@ def scrape_fuels():
     # =============================
     STOOQ = {
         "WTI_OIL": "cl.f",
-        "BRENT_OIL": "brn.f",
-        "NATGAS": "ng.f"
+        "BRENT_OIL": "cb.f",
+        "NATGAS": "ng.f",
+        "CO2": "ev.f",
+        "COAL": "lu.f"
 
     }
 
@@ -354,11 +356,11 @@ def scrape_fuels():
         print("❌ fuels ei saatu – fallback")
 
         rows = [
-            ["WTI", "cl.f", None, None, today],
-            ["BRENT", "b.f", None, None, today],
-            ["TTF", "european-natural-gas", None, None, today],
-            ["CO2", "carbon", None, None, today],
-            ["COAL", "coal", None, None, today],
+            ["WTI_OIL", "cl.f", None, None, today],
+            ["BRENT_OIL", "cb.f", None, None, today],
+            ["NATGAS", "tg.f", None, None, today],
+            ["CO2", "ev.f", None, None, today],
+            ["COAL", "lu.f", None, None, today],
         ]
 
     # =============================
