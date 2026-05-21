@@ -153,8 +153,15 @@ def generate_reports():
         print("❌ Ei dataa raportointiin")
         return
 
-    df["Settl."] = df["Settl."].str.replace(",", "")
-    df["Settl."] = pd.to_numeric(df["Settl."], errors="coerce")
+# ✅ pakota stringiksi ensin
+df["Settl."] = df["Settl."].astype(str)
+
+# ✅ siivoa
+df["Settl."] = df["Settl."].str.replace(",", "", regex=False)
+df["Settl."] = df["Settl."].replace("-", None)
+
+# ✅ numeroksi
+df["Settl."] = pd.to_numeric(df["Settl."], errors="coerce")
 
     df["Date"] = pd.to_datetime(df["Date"])
 
