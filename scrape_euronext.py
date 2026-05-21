@@ -317,7 +317,7 @@ def scrape_fuels():
     # =============================
     STOOQ = {
         "WTI": "cl.f",
-        "BRENT": "brn.f"
+        "BRENT": "b.f"
     }
 
     for name, symbol in STOOQ.items():
@@ -367,17 +367,30 @@ def scrape_fuels():
 
             # ✅ etsitään price HTML:stä
             import re
-            match = re.search(r'"last"\s*:\s*([\d\.]+)', text)
+            
+            for name, slug in TE.items():
 
-            if match:
-                price = match.group(1)
-            else:
-                price = None
+                print(f"🔎 Hakee {name} (TradingEconomics)")
 
-            rows.append([name, slug, price, None, today])
+                try:
+                url = f"https://tradingeconomics.com/{slug}"
+                r = requests.get(url, headers=headers)
 
-        except Exception as e:
-            print(f"⚠️ {name} fail: {e}")
+                text = r.text
+
+                # ✅ uusi parseri
+                match = re.search(r'id="p">([\d\.,]+)<', text)
+
+                if match:
+                    price = match.group(1).replace(",", "")
+                else:
+                    price = None
+
+                rows.append([name, slug, price, None, today])
+
+            except Exception as e:
+                print(f"⚠️ {name} fail: {e}")
+
 
     # =============================
     # ✅ FALLBACK (jos kaikki failaa)
