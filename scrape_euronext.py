@@ -318,7 +318,10 @@ def scrape_fuels():
     # =============================
     STOOQ = {
         "WTI": "cl.f",
-        "BRENT": "brent"
+        "BRENT": "cb.f"
+        "GAS": "tg.f"
+        "CO2": "ev.f"
+        "COAL": "lu.f"
     }
 
     for name, symbol in STOOQ.items():
@@ -343,46 +346,7 @@ def scrape_fuels():
         except Exception as e:
             print(f"⚠️ {name} fail: {e}")
 
-    # =============================
-    # ✅ TRADINGECONOMICS (EU DATA)
-    # =============================
-    TE = {
-        "TTF": "european-natural-gas",
-        "CO2": "carbon",
-        "COAL": "coal"
-    }
-
-    headers = {
-        "User-Agent": "Mozilla/5.0"
-    }
-
-    for name, slug in TE.items():
-
-        print(f"🔎 Hakee {name} (TradingEconomics)")
-
-        try:
-            url = f"https://tradingeconomics.com/{slug}"
-            r = requests.get(url, headers=headers)
-
-            text = r.text
-
-            match = re.search(r'id="p">([\d\.,]+)<', text)
-
-            if not match:
-                match = re.search(r'last:\s*([\d\.]+)', text)
-
-            if not match:
-                match = re.search(r'>(\d+\.\d+)<', text)
-
-            if match:
-                price = match.group(1).replace(",", "")
-            else:
-                price = None
-
-            rows.append([name, slug, price, None, today])
-
-        except Exception as e:
-            print(f"⚠️ {name} fail: {e}")
+    
 
     # =============================
     # ✅ FALLBACK
