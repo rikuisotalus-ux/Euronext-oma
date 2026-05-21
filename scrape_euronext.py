@@ -302,11 +302,72 @@ def generate_summary():
 
     print("✅ Copilot summary luotu!")
 
+
+# POLTTOAINETESTI
+def scrape_fuels():
+
+    import requests
+
+    TICKERS = {
+        "WTI": "CL=F",
+        "BRENT": "BZ=F",
+        "TTF": "TTF=F",
+        "CO2": "CO2.L"
+    }
+
+    url = "https://query1.finance.yahoo.com/v7/finance/quote"
+
+    today = datetime.utcnow().strftime("%Y-%m-%d")
+
+    rows = []
+
+    symbols = ",".join(TICKERS.values())
+
+    response = requests.get(url, params={"symbols": symbols})
+    data = response.json()
+
+    quotes = data["quoteResponse"]["result"]
+
+    for q in quotes:
+        symbol = q["symbol"]
+
+        name = [k for k, v in TICKERS.items() if v == symbol][0]
+
+        price = q.get("regularMarketPrice")
+        change = q.get("regularMarketChange")
+
+        rows.append([
+            name,
+            symbol,
+            price,
+            change,
+            today
+        ])
+
+    # ✅ latest fuels
+    with open("latest_fuels.csv", "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(["Product", "Symbol", "Price", "Change", "Date"])
+        writer.writerows(rows)
+
+    # ✅ historical fuels
+    file_exists = os.path.isfile("historical_fuels.csv")
+
+    with open("historical_fuels.csv", "a", newline="") as f:
+        writer = csv.writer(f)
+
+        if not file_exists:
+            writer.writerow(["Product", "Symbol", "Price", "Change", "Date"])
+
+        writer.writerows(rows)
+
+    print("✅ fuels data päivitetty")
 # =============================
 # RUN
 # =============================
 if __name__ == "__main__":
     headers, rows = scrape_api()
     write_files(headers, rows)
+    scrape_fuels()        # POLTTOAINETESTI
     generate_reports()
     generate_summary()
