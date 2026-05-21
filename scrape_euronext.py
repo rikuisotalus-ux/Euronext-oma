@@ -304,80 +304,106 @@ def generate_summary():
 
 
 # POLTTOAINETESTI
+
 def scrape_fuels():
+
     import requests
 
     today = datetime.utcnow().strftime("%Y-%m-%d")
-
-    SYMBOLS = {
-        "WTI": "crude_oil",
-        "BRENT": "brent",
-        "TTF": "natgas_eu",
-        "CO2": "co2_eua",
-        "COAL": "coal_api2"
-    }
-
     rows = []
 
-    for name, symbol in SYMBOLS.items():
+    # =============================
+    # ✅ STOOQ (WTI + BRENT)
+    # =============================
+    STOOQ = {
+        "WTI": "cl.f",
+        "BRENT": "brn.f"
+    }
 
-        url = f"https://stooq.com/q/l/?s={symbol}&f=sd2t2ohlcv&h&e=csv"
+    for name, symbol in STOOQ.items():
 
         print(f"🔎 Hakee {name} (Stooq)")
 
         try:
+            url = f"https://stooq.com/q/l/?s={symbol}&f=sd2t2ohlcv&h&e=csv"
             r = requests.get(url)
 
-            if r.status_code != 200:
-                print(f"⚠️ {name} HTTP {r.status_code}")
+            lines = r.text.splitlines()
+
+            if len(lines) < 2:
                 continue
 
-            text = r.text.splitlines()
+            data = lines[1].split(",")
 
-            if len(text) < 2:
-                print(f"⚠️ {name} ei dataa")
-                continue
-
-            # header + yksi rivi
-            data = text[1].split(",")
-
-            # Close price
             price = data[6] if len(data) > 6 else None
 
-            # jos empty
-            if price == "":
-                price = None
-
-            rows.append([
-                name,
-                symbol,
-                price,
-                None,
-                today
-            ])
+            rows.append([name, symbol, price, None, today])
 
         except Exception as e:
             print(f"⚠️ {name} fail: {e}")
 
-    # ✅ fallback jos kaikki failaa (very unlikely)
+    # =============================
+    # ✅ TRADINGECONOMICS (EU DATA)
+    # =============================
+    TE = {
+        "TTF": "european-natural-gas",
+        "CO2": "carbon",
+        "COAL": "coal"
+    }
+
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
+
+    for name, slug in TE.items():
+
+        print(f"🔎 Hakee {name} (TradingEconomics)")
+
+        try:
+            url = f"https://tradingeconomics.com/{slug}"
+            r = requests.get(url, headers=headers)
+
+            text = r.text
+
+            # ✅ etsitään price HTML:stä
+            import re
+            match = re.search(r'"last"\s*:\s*([\d\.]+)', text)
+
+            if match:
+                price = match.group(1)
+            else:
+                price = None
+
+            rows.append([name, slug, price, None, today])
+
+        except Exception as e:
+            print(f"⚠️ {name} fail: {e}")
+
+    # =============================
+    # ✅ FALLBACK (jos kaikki failaa)
+    # =============================
     if not rows:
         print("❌ fuels ei saatu – fallback")
 
         rows = [
-            ["WTI", "crude_oil", None, None, today],
-            ["BRENT", "brent", None, None, today],
-            ["TTF", "natgas_eu", None, None, today],
-            ["CO2", "co2_eua", None, None, today],
-            ["COAL", "coal_api2", None, None, today],
+            ["WTI", "cl.f", None, None, today],
+            ["BRENT", "brn.f", None, None, today],
+            ["TTF", "european-natural-gas", None, None, today],
+            ["CO2", "carbon", None, None, today],
+            ["COAL", "coal", None, None, today],
         ]
 
-    # ✅ latest
+    # =============================
+    # ✅ WRITE CSV
+    # =============================
+
+    # latest
     with open("latest_fuels.csv", "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["Product", "Symbol", "Price", "Change", "Date"])
         writer.writerows(rows)
 
-    # ✅ historical
+    # historical
     file_exists = os.path.isfile("historical_fuels.csv")
 
     with open("historical_fuels.csv", "a", newline="") as f:
@@ -388,8 +414,7 @@ def scrape_fuels():
 
         writer.writerows(rows)
 
-    print("✅ fuels (STOOQ) päivitetty")
-
+    print("✅ fuels (HYBRID) päivitetty")
 
 
 # =============================
