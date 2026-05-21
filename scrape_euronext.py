@@ -318,7 +318,7 @@ def scrape_fuels():
     # =============================
     STOOQ = {
         "WTI": "cl.f",
-        "BRENT": "b.f"
+        "BRENT": "brent"
     }
 
     for name, symbol in STOOQ.items():
@@ -367,6 +367,12 @@ def scrape_fuels():
             text = r.text
 
             match = re.search(r'id="p">([\d\.,]+)<', text)
+
+            if not match:
+                match = re.search(r'last:\s*([\d\.]+)', text)
+
+            if not match:
+                match = re.search(r'>(\d+\.\d+)<', text)
 
             if match:
                 price = match.group(1).replace(",", "")
