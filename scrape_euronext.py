@@ -333,7 +333,7 @@ def calculate_spark_spread():
         print("⚠️ Gas price puuttuu")
         return
 
-    gas_price = gas_row["Price"].iloc[0]
+    gas_price = gas_row["Last"].iloc[0]
 
     print(f"✅ Gas price käytössä: {gas_price}")
 
