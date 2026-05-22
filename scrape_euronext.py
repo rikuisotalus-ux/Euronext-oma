@@ -567,6 +567,15 @@ def generate_fuel_insight():
         print("❌ Ei fuel history dataa")
         return
 
+    # ✅ FALLBACK: jos Last puuttuu → lopeta siististi
+    if "Last" not in df.columns:
+        print("⚠️ 'Last' column puuttuu historystä → skip insight")
+        return
+
+    if "Date" not in df.columns:
+        print("⚠️ Date column puuttuu → skip insight")
+        return
+
     df["Last"] = pd.to_numeric(df["Last"], errors="coerce")
     df["Date"] = pd.to_datetime(df["Date"])
 
