@@ -526,6 +526,10 @@ def scrape_fuels():
             last_f = to_float(last_price)
             close_f = to_float(close_price)
             prev_f = to_float(prev_close)
+            # ✅ fallback: jos last puuttuu → käytä closea
+            if last_f is None:
+                last_f = close_f
+                last_price = close_price
 
             intraday_change = None
             daily_change = None
