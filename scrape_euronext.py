@@ -513,27 +513,33 @@ def scrape_fuels():
     # =============================
     # ✅ WRITE HISTORY (1x PER DAY)
     # =============================
-    file_exists = os.path.isfile("historical_fuels.csv")
+    from datetime import datetime
 
-    # ✅ jos löytyy → tarkistetaan onko tämä päivä jo tallennettu
+    hour = datetime.utcnow().hour
+    
+    file_exists = os.path.isfile("historical_fuels.csv")
+    
+    # ✅ vain yöllä
+    if not (2 <= hour <= 6):
+        print("⏭️ ei tallenneta historyyn (ei yöajo)")
+        return
+    
+    # ✅ jos tiedosto on olemassa → tarkista duplikaatti
     if file_exists:
         try:
             hist = pd.read_csv("historical_fuels.csv")
-
-            # normalisoi date
             hist["Date"] = hist["Date"].astype(str)
-
+    
             if today in hist["Date"].values:
                 print("⏭️ history jo olemassa tältä päivältä")
                 return
-
         except:
             pass
-
-    # ✅ lisätään kerran per päivä
+    
+    # ✅ kirjoita historyyn
     with open("historical_fuels.csv", "a", newline="") as f:
         writer = csv.writer(f)
-
+    
         if not file_exists:
             writer.writerow([
                 "Product",
@@ -545,10 +551,10 @@ def scrape_fuels():
                 "DailyChange",
                 "Date"
             ])
-
+    
         writer.writerows(rows)
-
-    print("✅ historical_fuels.csv päivitetty (1x päivä)")
+    
+    print("✅ historical_fuels.csv päivitetty (yö + 1x/päivä)")
 
 
 
