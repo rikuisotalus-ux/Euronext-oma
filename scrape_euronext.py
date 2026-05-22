@@ -434,7 +434,7 @@ def scrape_fuels():
     # ✅ takaisin toimiviin symboleihin
     SYMBOLS = {
         "WTI_OIL": "cl.f",
-        "BRENT_OIL": "bf.f",
+        "BRENT_OIL": "cb.f",
         "NATGAS": "tg.f",
         "CO2": "ev.f",
         "COAL": "lu.f"
