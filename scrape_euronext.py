@@ -419,7 +419,12 @@ def calculate_dark_spread():
 def scrape_fuels():
 
     import requests
+    import csv
+    import os
     from datetime import datetime, timedelta
+
+    # ✅ API KEY
+    API_KEY = "OyprR26aft4TPSYHgjc805uozbVLlmsnT"
 
     today = datetime.utcnow().strftime("%Y-%m-%d")
     today_dt = datetime.utcnow().date()
@@ -455,58 +460,49 @@ def scrape_fuels():
 
             last_price = None
 
-            lines = [line for line in r_last.text.splitlines() if line.strip()]
+            lines_last = [line for line in r_last.text.splitlines() if line.strip()]
 
-            if len(lines) >= 2:
-                data = lines[1].split(",")
+            if len(lines_last) >= 2:
+                data = lines_last[1].split(",")
 
                 if len(data) > 6:
                     val = data[6]
                     last_price = None if val in ["", "N/D"] else val
 
             # =============================
-            # ✅ CLOSE + PREV CLOSE (date-range FIX)
+            # ✅ CLOSE + PREV CLOSE (API KEY FIX)
             # =============================
             url_hist = (
                 f"https://stooq.com/q/d/l/?s={symbol}"
                 f"&d1={two_days_ago.strftime('%Y%m%d')}"
                 f"&d2={yesterday.strftime('%Y%m%d')}"
                 f"&i=d"
+                f"&apikey={API_KEY}"
             )
 
             r_hist = requests.get(url_hist, headers=headers)
 
-            print(f"{name} HIST RAW:\n{r_hist.text[:200]}")
-            import pandas as pd
-
-            try:
-                df = pd.read_csv(url_hist)
-                print(f"{name} DF HEAD:")
-                print(df.head())
-            except Exception as e:
-                print(f"{name} CSV FAIL:", e)
+            lines_hist = [line for line in r_hist.text.splitlines() if line.strip()]
 
             close_price = None
             prev_close = None
 
-            lines = [line for line in r_hist.text.splitlines() if line.strip()]
-
-            # CSV format:
+            # CSV muodossa:
             # Date,Open,High,Low,Close,Volume
 
-            if len(lines) >= 2:
-                last_row = lines[-1].split(",")
+            if len(lines_hist) >= 2:
+                last_row = lines_hist[-1].split(",")
 
                 if len(last_row) > 4:
-                    close_val = last_row[4]
-                    close_price = None if close_val in ["", "N/D"] else close_val
+                    val = last_row[4]
+                    close_price = None if val in ["", "N/D"] else val
 
-            if len(lines) >= 3:
-                prev_row = lines[-2].split(",")
+            if len(lines_hist) >= 3:
+                prev_row = lines_hist[-2].split(",")
 
                 if len(prev_row) > 4:
-                    prev_val = prev_row[4]
-                    prev_close = None if prev_val in ["", "N/D"] else prev_val
+                    val = prev_row[4]
+                    prev_close = None if val in ["", "N/D"] else val
 
             # =============================
             # ✅ CONVERSIONS
@@ -597,6 +593,7 @@ def scrape_fuels():
         writer.writerows(rows)
 
     print("✅ fuels (last + REAL close + trends) päivitetty")
+
 
 def generate_market_analysis():
 
