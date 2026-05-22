@@ -477,6 +477,14 @@ def scrape_fuels():
             r_hist = requests.get(url_hist, headers=headers)
 
             print(f"{name} HIST RAW:\n{r_hist.text[:200]}")
+            import pandas as pd
+
+            try:
+                df = pd.read_csv(url_hist)
+                print(f"{name} DF HEAD:")
+                print(df.head())
+            except Exception as e:
+                print(f"{name} CSV FAIL:", e)
 
             close_price = None
             prev_close = None
