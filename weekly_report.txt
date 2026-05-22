@@ -1,11 +1,11 @@
-ProductCode  Settl._latest  Settl._avg    Trend
- HLBMJUL-26          -15.0  -15.359211 0.359211
- HLBMJUL-26          -15.0  -15.359211 0.359211
- HLBMJUL-26          -15.0  -15.359211 0.359211
- HLBMJUL-26          -15.0  -15.359211 0.359211
- HLBMJUL-26          -15.0  -15.359211 0.359211
- HLBMJUL-26          -15.0  -15.359211 0.359211
- HLBMJUL-26          -15.0  -15.359211 0.359211
- HLBMJUL-26          -15.0  -15.359211 0.359211
- HLBMJUL-26          -15.0  -15.359211 0.359211
- HLBMJUL-26          -15.0  -15.359211 0.359211
+ProductCode  Settl._latest  Settl._avg  Trend
+ HLBMJUL-26          -15.0      -15.35   0.35
+ HLBMJUL-26          -15.0      -15.35   0.35
+ HLBMJUL-26          -15.0      -15.35   0.35
+ HLBMJUL-26          -15.0      -15.35   0.35
+ HLBMJUL-26          -15.0      -15.35   0.35
+ HLBMJUL-26          -15.0      -15.35   0.35
+ HLBMJUL-26          -15.0      -15.35   0.35
+ HLBMJUL-26          -15.0      -15.35   0.35
+ HLBMJUL-26          -15.0      -15.35   0.35
+ HLBMJUL-26          -15.0      -15.35   0.35
