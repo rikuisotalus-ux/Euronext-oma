@@ -436,11 +436,17 @@ def scrape_fuels():
         print(f"🔎 Hakee {name} (Stooq)")
 
         try:
+            
+            headers = {
+                "User-Agent": "Mozilla/5.0",
+                "Accept": "text/csv"
+            }
+
             # =============================
             # ✅ LAST (intraday)
             # =============================
             url_last = f"https://stooq.com/q/l/?s={symbol}&f=sd2t2ohlcv&h&e=csv"
-            r_last = requests.get(url_last)
+            r_last = requests.get(url_last, headers=headers)
 
             last_price = None
 
@@ -454,7 +460,7 @@ def scrape_fuels():
             # ✅ CLOSE + PREVIOUS CLOSE
             # =============================
             url_hist = f"https://stooq.com/q/d/l/?s={symbol}&i=d"
-            r_hist = requests.get(url_hist)
+            r_hist = requests.get(url_hist, headers=headers)
             print(f"{name} HIST RAW:\n{r_hist.text[:200]}")
 
             close_price = None
