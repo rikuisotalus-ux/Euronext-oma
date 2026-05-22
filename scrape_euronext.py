@@ -557,7 +557,82 @@ def scrape_fuels():
     print("✅ historical_fuels.csv päivitetty (yö + 1x/päivä)")
 
 
+def generate_fuel_insight():
 
+    import pandas as pd
+
+    try:
+        df = pd.read_csv("historical_fuels.csv")
+    except:
+        print("❌ Ei fuel history dataa")
+        return
+
+    df["Last"] = pd.to_numeric(df["Last"], errors="coerce")
+    df["Date"] = pd.to_datetime(df["Date"])
+
+    today = df["Date"].max()
+    yesterday = today - pd.Timedelta(days=1)
+
+    today_df = df[df["Date"] == today]
+    yest_df = df[df["Date"] == yesterday]
+
+    merged = pd.merge(
+        today_df,
+        yest_df,
+        on="Product",
+        suffixes=("_today", "_yesterday")
+    )
+
+    merged["Change"] = merged["Last_today"] - merged["Last_yesterday"]
+
+    text = []
+    text.append("Fuel Market\n")
+    text.append("-" * 30 + "\n")
+
+    gas_move = None
+    co2_move = None
+
+    for _, row in merged.iterrows():
+        change = row["Change"]
+        name = row["Product"]
+
+        if pd.isna(change):
+            continue
+
+        if change > 0:
+            arrow = "↑"
+        elif change < 0:
+            arrow = "↓"
+        else:
+            arrow = "→"
+
+        text.append(f"{name}: {row['Last_today']:.2f} ({change:+.2f}) {arrow}\n")
+
+        if name == "NATGAS":
+            gas_move = change
+        if name == "CO2":
+            co2_move = change
+
+    # 🔥 MARKET TULKINTA
+    text.append("\nMarket Interpretation\n")
+    text.append("-" * 30 + "\n")
+
+    if gas_move is not None:
+        if gas_move > 0:
+            text.append("Gas rising → spark spreads tightening\n")
+        elif gas_move < 0:
+            text.append("Gas falling → spark spreads widening\n")
+
+    if co2_move is not None:
+        if co2_move > 0:
+            text.append("CO2 rising → dark spreads tightening\n")
+        elif co2_move < 0:
+            text.append("CO2 falling → dark spreads widening\n")
+
+    with open("fuel_insight.txt", "w") as f:
+        f.write("".join(text))
+
+    print("✅ Fuel insight + tulkinta luotu")
 
 def generate_market_analysis():
 
@@ -581,7 +656,11 @@ def generate_market_analysis():
             dark = f.read()
     except:
         dark = "Ei dark spread dataa.\n"
-
+    try:
+        with open("fuel_insight.txt", "r") as f:
+            fuel = f.read()
+    except:
+        fuel = "Ei fuel insight dataa.\n"
     # =============================
     # ✅ yhdistä raportti
     # =============================
@@ -593,6 +672,11 @@ def generate_market_analysis():
     report.append("Power Market Summary\n")
     report.append("-" * 30 + "\n")
     report.append(summary + "\n\n")
+    
+    report.append("Fuel Market\n")
+    report.append("-" * 30 + "\n")
+    report.append(fuel + "\n\n")
+
 
     report.append("Spark Spread (Gas-based)\n")
     report.append("-" * 30 + "\n")
@@ -626,4 +710,5 @@ if __name__ == "__main__":
     generate_summary()
     calculate_spark_spread()
     calculate_dark_spread()
+    generate_fuel_insight()
     generate_market_analysis()
