@@ -311,7 +311,8 @@ def calculate_spark_spread():
     except:
         print("❌ Ei dataa spreadiin")
         return
-
+    # ✅ FIX TÄHÄN
+    fuels["Product"] = fuels["Product"].astype(str).str.strip().str.upper()
     # =============================
     # ✅ CLEAN POWER
     # =============================
@@ -363,6 +364,9 @@ def calculate_dark_spread():
     except:
         print("❌ Ei dataa dark spreadiin")
         return
+
+    # ✅ FIX TÄHÄN
+    fuels["Product"] = fuels["Product"].astype(str).str.strip().str.upper()
 
     # =============================
     # ✅ CLEAN POWER
