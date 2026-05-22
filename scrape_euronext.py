@@ -419,8 +419,14 @@ def calculate_dark_spread():
 def scrape_fuels():
 
     import requests
+    from datetime import datetime, timedelta
 
     today = datetime.utcnow().strftime("%Y-%m-%d")
+    today_dt = datetime.utcnow().date()
+
+    yesterday = today_dt - timedelta(days=1)
+    two_days_ago = today_dt - timedelta(days=2)
+
     rows = []
 
     SYMBOLS = {
@@ -431,17 +437,16 @@ def scrape_fuels():
         "COAL": "lu.f"
     }
 
+    headers = {
+        "User-Agent": "Mozilla/5.0",
+        "Accept": "text/csv"
+    }
+
     for name, symbol in SYMBOLS.items():
 
         print(f"🔎 Hakee {name} (Stooq)")
 
         try:
-            
-            headers = {
-                "User-Agent": "Mozilla/5.0",
-                "Accept": "text/csv"
-            }
-
             # =============================
             # ✅ LAST (intraday)
             # =============================
@@ -450,17 +455,27 @@ def scrape_fuels():
 
             last_price = None
 
-            lines = r_last.text.splitlines()
+            lines = [line for line in r_last.text.splitlines() if line.strip()]
+
             if len(lines) >= 2:
                 data = lines[1].split(",")
+
                 if len(data) > 6:
-                    last_price = data[6] or None
+                    val = data[6]
+                    last_price = None if val in ["", "N/D"] else val
 
             # =============================
-            # ✅ CLOSE + PREVIOUS CLOSE
+            # ✅ CLOSE + PREV CLOSE (date-range FIX)
             # =============================
-            url_hist = f"https://stooq.com/q/d/l/?s={symbol}&i=d"
+            url_hist = (
+                f"https://stooq.com/q/d/l/?s={symbol}"
+                f"&d1={two_days_ago.strftime('%Y%m%d')}"
+                f"&d2={yesterday.strftime('%Y%m%d')}"
+                f"&i=d"
+            )
+
             r_hist = requests.get(url_hist, headers=headers)
+
             print(f"{name} HIST RAW:\n{r_hist.text[:200]}")
 
             close_price = None
@@ -468,16 +483,22 @@ def scrape_fuels():
 
             lines = [line for line in r_hist.text.splitlines() if line.strip()]
 
-            
+            # CSV format:
+            # Date,Open,High,Low,Close,Volume
+
             if len(lines) >= 2:
                 last_row = lines[-1].split(",")
 
-                close_price = last_row[4] if len(last_row) > 4 else None
+                if len(last_row) > 4:
+                    close_val = last_row[4]
+                    close_price = None if close_val in ["", "N/D"] else close_val
 
-                if len(lines) >= 3:
-                    prev_row = lines[-2].split(",")
-                    prev_close = prev_row[4] if len(prev_row) > 4 else None
+            if len(lines) >= 3:
+                prev_row = lines[-2].split(",")
 
+                if len(prev_row) > 4:
+                    prev_val = prev_row[4]
+                    prev_close = None if prev_val in ["", "N/D"] else prev_val
 
             # =============================
             # ✅ CONVERSIONS
@@ -516,7 +537,7 @@ def scrape_fuels():
             print(f"⚠️ {name} fail: {e}")
 
     # =============================
-    # ✅ FALLBACK (jos kaikki failaa)
+    # ✅ FALLBACK
     # =============================
     if not rows:
         print("❌ fuels ei saatu – fallback")
@@ -567,7 +588,8 @@ def scrape_fuels():
 
         writer.writerows(rows)
 
-    print("✅ fuels (last + close + trends) päivitetty")
+    print("✅ fuels (last + REAL close + trends) päivitetty")
+
 def generate_market_analysis():
 
     # =============================
