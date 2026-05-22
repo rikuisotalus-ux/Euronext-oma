@@ -426,12 +426,12 @@ def scrape_fuels():
     import csv
     import os
     from datetime import datetime
+    import pandas as pd
 
     today = datetime.utcnow().strftime("%Y-%m-%d")
 
     rows = []
 
-    # ✅ takaisin toimiviin symboleihin
     SYMBOLS = {
         "WTI_OIL": "cl.f",
         "BRENT_OIL": "cb.f",
@@ -450,41 +450,39 @@ def scrape_fuels():
         print(f"🔎 Hakee {name} (Stooq LAST)")
 
         try:
-            params_last = {
+            params = {
                 "s": symbol,
                 "f": "sd2t2ohlcv",
                 "h": "",
                 "e": "csv"
             }
 
-            r_last = requests.get(
+            r = requests.get(
                 "https://stooq.com/q/l/",
-                params=params_last,
+                params=params,
                 headers=headers
             )
 
             last_price = None
 
-            lines = [l for l in r_last.text.splitlines() if l.strip()]
+            lines = [l for l in r.text.splitlines() if l.strip()]
 
             if len(lines) >= 2:
                 data = lines[1].split(",")
 
-                # ✅ CLOSE on index 6 (tämä on se jotka toimii .f symboleilla)
+                # ✅ .f symboleilla CLOSE = index 6
                 if len(data) > 6:
                     val = data[6]
                     last_price = None if val in ["", "N/D"] else val
 
-            # ✅ EI ENÄÄ historialliseen dataan liittyvää koodia
-
             rows.append([
                 name,
                 symbol,
-                last_price,   # toimii sekä last & close
-                None,         # Close poistettu käytöstä
-                None,         # PrevClose poistettu
-                None,         # IntradayChange poistettu
-                None,         # DailyChange poistettu
+                last_price,
+                None,
+                None,
+                None,
+                None,
                 today
             ])
 
@@ -492,7 +490,7 @@ def scrape_fuels():
             print(f"⚠️ {name} fail: {e}")
 
     # =============================
-    # ✅ WRITE CSV
+    # ✅ WRITE LATEST
     # =============================
     with open("latest_fuels.csv", "w", newline="") as f:
         writer = csv.writer(f)
@@ -510,8 +508,29 @@ def scrape_fuels():
 
         writer.writerows(rows)
 
+    print("✅ latest_fuels.csv päivitetty")
+
+    # =============================
+    # ✅ WRITE HISTORY (1x PER DAY)
+    # =============================
     file_exists = os.path.isfile("historical_fuels.csv")
 
+    # ✅ jos löytyy → tarkistetaan onko tämä päivä jo tallennettu
+    if file_exists:
+        try:
+            hist = pd.read_csv("historical_fuels.csv")
+
+            # normalisoi date
+            hist["Date"] = hist["Date"].astype(str)
+
+            if today in hist["Date"].values:
+                print("⏭️ history jo olemassa tältä päivältä")
+                return
+
+        except:
+            pass
+
+    # ✅ lisätään kerran per päivä
     with open("historical_fuels.csv", "a", newline="") as f:
         writer = csv.writer(f)
 
@@ -529,7 +548,7 @@ def scrape_fuels():
 
         writer.writerows(rows)
 
-    print("✅ fuels (LAST only) päivitetty")
+    print("✅ historical_fuels.csv päivitetty (1x päivä)")
 
 
 
