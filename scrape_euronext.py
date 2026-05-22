@@ -453,7 +453,7 @@ def scrape_fuels():
             # =============================
             # ✅ CLOSE + PREVIOUS CLOSE
             # =============================
-            url_hist = f"https://stooq.com/q/d/l/?s={symbol}&i=d
+            url_hist = f"https://stooq.com/q/d/l/?s={symbol}&i=d"
             r_hist = requests.get(url_hist)
 
             close_price = None
