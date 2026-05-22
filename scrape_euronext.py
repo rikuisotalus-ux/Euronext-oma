@@ -425,26 +425,20 @@ def scrape_fuels():
     import requests
     import csv
     import os
-    from datetime import datetime, timedelta
-
-    API_KEY = "OyprR26aft4TPSYHgjc805uozbVLlmsnT"
+    from datetime import datetime
 
     today = datetime.utcnow().strftime("%Y-%m-%d")
-    today_dt = datetime.utcnow().date()
-
-    yesterday = today_dt - timedelta(days=1)
-    two_days_ago = today_dt - timedelta(days=2)
 
     rows = []
 
+    # ✅ takaisin toimiviin symboleihin
     SYMBOLS = {
-        "WTI_OIL": "cl",
-        "BRENT_OIL": "brn",
-        "NATGAS": "ng",
-        "CO2": "co2",
-        "COAL": "coal"
+        "WTI_OIL": "cl.f",
+        "BRENT_OIL": "bf.f",
+        "NATGAS": "tg.f",
+        "CO2": "ev.f",
+        "COAL": "lu.f"
     }
-
 
     headers = {
         "User-Agent": "Mozilla/5.0",
@@ -453,12 +447,9 @@ def scrape_fuels():
 
     for name, symbol in SYMBOLS.items():
 
-        print(f"🔎 Hakee {name} (Stooq)")
+        print(f"🔎 Hakee {name} (Stooq LAST)")
 
         try:
-            # =============================
-            # ✅ LAST (PARAMS FIX)
-            # =============================
             params_last = {
                 "s": symbol,
                 "f": "sd2t2ohlcv",
@@ -474,90 +465,26 @@ def scrape_fuels():
 
             last_price = None
 
-            lines_last = [l for l in r_last.text.splitlines() if l.strip()]
+            lines = [l for l in r_last.text.splitlines() if l.strip()]
 
-            if len(lines_last) >= 2:
-                data = lines_last[1].split(",")
+            if len(lines) >= 2:
+                data = lines[1].split(",")
 
-                if len(data) > 4:
-                    val = data[4]
+                # ✅ CLOSE on index 6 (tämä on se jotka toimii .f symboleilla)
+                if len(data) > 6:
+                    val = data[6]
                     last_price = None if val in ["", "N/D"] else val
 
-            # =============================
-            # ✅ HIST (PARAMS → EI &amp; BUGIA)
-            # =============================
-            params_hist = {
-                "s": symbol,
-                "d1": two_days_ago.strftime("%Y%m%d"),
-                "d2": yesterday.strftime("%Y%m%d"),
-                "i": "d",
-                "apikey": API_KEY
-            }
-
-            r_hist = requests.get(
-                "https://stooq.com/q/d/l/",
-                params=params_hist,
-                headers=headers
-            )
-
-            if not r_hist.text.strip():
-                print(f"❌ {name} EMPTY RESPONSE")
-
-            lines_hist = [l for l in r_hist.text.splitlines() if l.strip()]
-
-            close_price = None
-            prev_close = None
-
-          
-
-            if len(lines_hist) >= 2:
-                last_row = lines_hist[-1].split(",")
-                if len(last_row) > 4:
-                    close_price = last_row[4]
-            
-            # ✅ fallback: jos ei ole edellistä päivää
-            if len(lines_hist) >= 3:
-                prev_row = lines_hist[-2].split(",")
-                if len(prev_row) > 4:
-                    prev_close = prev_row[4]
-            else:
-                prev_close = close_price
-
-
-            # =============================
-            # ✅ CONVERSION
-            # =============================
-            def to_float(x):
-                try:
-                    return float(x)
-                except:
-                    return None
-
-            last_f = to_float(last_price)
-            close_f = to_float(close_price)
-            prev_f = to_float(prev_close)
-            # ✅ fallback: jos last puuttuu → käytä closea
-            if last_f is None:
-                last_f = close_f
-                last_price = close_price
-
-            intraday_change = None
-            daily_change = None
-
-            if last_f is not None and close_f is not None:
-                intraday_change = last_f - close_f
-
-            if close_f is not None and prev_f is not None:
-                daily_change = close_f - prev_f
+            # ✅ EI ENÄÄ historialliseen dataan liittyvää koodia
 
             rows.append([
                 name,
                 symbol,
-                last_price,
-                close_price,
-                prev_close,
-                intraday_change,
-                daily_change,
+                last_price,   # toimii sekä last & close
+                None,         # Close poistettu käytöstä
+                None,         # PrevClose poistettu
+                None,         # IntradayChange poistettu
+                None,         # DailyChange poistettu
                 today
             ])
 
@@ -602,7 +529,7 @@ def scrape_fuels():
 
         writer.writerows(rows)
 
-    print("✅ fuels (last + REAL close + trends) päivitetty")
+    print("✅ fuels (LAST only) päivitetty")
 
 
 
