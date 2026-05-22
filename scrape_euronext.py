@@ -419,68 +419,122 @@ def calculate_dark_spread():
 def scrape_fuels():
 
     import requests
-    import re
 
     today = datetime.utcnow().strftime("%Y-%m-%d")
     rows = []
 
-    # =============================
-    # ✅ STOOQ (WTI + BRENT)
-    # =============================
-    STOOQ = {
+    SYMBOLS = {
         "WTI_OIL": "cl.f",
         "BRENT_OIL": "cb.f",
         "NATGAS": "tg.f",
         "CO2": "ev.f",
         "COAL": "lu.f"
-
     }
 
-    for name, symbol in STOOQ.items():
+    for name, symbol in SYMBOLS.items():
 
         print(f"🔎 Hakee {name} (Stooq)")
 
         try:
-            url = f"https://stooq.com/q/l/?s={symbol}&f=sd2t2ohlcv&h&e=csv"
-            r = requests.get(url)
+            # =============================
+            # ✅ LAST (intraday)
+            # =============================
+            url_last = f"https://stooq.com/q/l/?s={symbol}&f=sd2t2ohlcv&h&e=csv"
+            r_last = requests.get(url_last)
 
-            lines = r.text.splitlines()
+            last_price = None
 
-            if len(lines) < 2:
-                continue
+            lines = r_last.text.splitlines()
+            if len(lines) >= 2:
+                data = lines[1].split(",")
+                if len(data) > 6:
+                    last_price = data[6] or None
 
-            data = lines[1].split(",")
+            # =============================
+            # ✅ CLOSE + PREVIOUS CLOSE
+            # =============================
+            url_hist = f"https://stooq.com/q/d/l/?s={symbol}&i=d"
+            r_hist = requests.get(url_hist)
 
-            price = data[6] if len(data) > 6 else None
+            close_price = None
+            prev_close = None
 
-            rows.append([name, symbol, price, None, today])
+            lines = r_hist.text.splitlines()
+
+            if len(lines) >= 3:
+                last_row = lines[-1].split(",")
+                prev_row = lines[-2].split(",")
+
+                close_price = last_row[4] or None
+                prev_close = prev_row[4] or None
+
+            # =============================
+            # ✅ CONVERSIONS
+            # =============================
+            def to_float(x):
+                try:
+                    return float(x)
+                except:
+                    return None
+
+            last_f = to_float(last_price)
+            close_f = to_float(close_price)
+            prev_f = to_float(prev_close)
+
+            intraday_change = None
+            daily_change = None
+
+            if last_f is not None and close_f is not None:
+                intraday_change = last_f - close_f
+
+            if close_f is not None and prev_f is not None:
+                daily_change = close_f - prev_f
+
+            rows.append([
+                name,
+                symbol,
+                last_price,
+                close_price,
+                prev_close,
+                intraday_change,
+                daily_change,
+                today
+            ])
 
         except Exception as e:
             print(f"⚠️ {name} fail: {e}")
 
-    
-
     # =============================
-    # ✅ FALLBACK
+    # ✅ FALLBACK (jos kaikki failaa)
     # =============================
     if not rows:
         print("❌ fuels ei saatu – fallback")
 
         rows = [
-            ["WTI_OIL", "cl.f", None, None, today],
-            ["BRENT_OIL", "cb.f", None, None, today],
-            ["NATGAS", "tg.f", None, None, today],
-            ["CO2", "ev.f", None, None, today],
-            ["COAL", "lu.f", None, None, today],
+            ["WTI_OIL", "cl.f", None, None, None, None, None, today],
+            ["BRENT_OIL", "cb.f", None, None, None, None, None, today],
+            ["NATGAS", "tg.f", None, None, None, None, None, today],
+            ["CO2", "ev.f", None, None, None, None, None, today],
+            ["COAL", "lu.f", None, None, None, None, None, today],
         ]
 
     # =============================
     # ✅ WRITE CSV
     # =============================
-
     with open("latest_fuels.csv", "w", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(["Product", "Symbol", "Price", "Change", "Date"])
+
+        writer.writerow([
+            "Product",
+            "Symbol",
+            "Last",
+            "Close",
+            "PrevClose",
+            "IntradayChange",
+            "DailyChange",
+            "Date"
+        ])
+
         writer.writerows(rows)
 
     file_exists = os.path.isfile("historical_fuels.csv")
@@ -489,11 +543,20 @@ def scrape_fuels():
         writer = csv.writer(f)
 
         if not file_exists:
-            writer.writerow(["Product", "Symbol", "Price", "Change", "Date"])
+            writer.writerow([
+                "Product",
+                "Symbol",
+                "Last",
+                "Close",
+                "PrevClose",
+                "IntradayChange",
+                "DailyChange",
+                "Date"
+            ])
 
         writer.writerows(rows)
 
-    print("✅ fuels (HYBRID) päivitetty")
+    print("✅ fuels (last + close + trends) päivitetty")
 def generate_market_analysis():
 
     # =============================
