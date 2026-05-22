@@ -455,6 +455,7 @@ def scrape_fuels():
             # =============================
             url_hist = f"https://stooq.com/q/d/l/?s={symbol}&i=d"
             r_hist = requests.get(url_hist)
+            print(f"{name} HIST RAW:\n{r_hist.text[:200]}")
 
             close_price = None
             prev_close = None
