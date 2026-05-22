@@ -460,7 +460,13 @@ def scrape_fuels():
                        "&i=d" + \
                        "&apikey=" + API_KEY
 
-            # ✅ DEBUG (nyt toimii)
+            # ✅ DEBUG
+            print("RAW HIST URL:", url_hist)
+
+            # ✅ 🔥 PAKKO FIX
+            url_hist = url_hist.replace("&amp;", "&")
+            url_last = url_last.replace("&amp;", "&")
+
             print("FINAL HIST URL:", url_hist)
 
             # =============================
