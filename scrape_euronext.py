@@ -446,6 +446,9 @@ def scrape_fuels():
         "Accept": "text/csv"
     }
 
+    url_hist = url_hist.replace("&amp;", "&")
+    url_last = url_last.replace("&amp;", "&")
+
     for name, symbol in SYMBOLS.items():
 
         print(f"🔎 Hakee {name} (Stooq)")
