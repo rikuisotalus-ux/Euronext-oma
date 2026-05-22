@@ -423,7 +423,6 @@ def scrape_fuels():
     import os
     from datetime import datetime, timedelta
 
-    # ✅ API KEY
     API_KEY = "OyprR26aft4TPSYHgjc805uozbVLlmsnT"
 
     today = datetime.utcnow().strftime("%Y-%m-%d")
@@ -436,7 +435,7 @@ def scrape_fuels():
 
     SYMBOLS = {
         "WTI_OIL": "cl.f",
-        "BRENT_OIL": "cb.f",
+        "BRENT_OIL": "bf.f",  # ✅ korjattu!
         "NATGAS": "tg.f",
         "CO2": "ev.f",
         "COAL": "lu.f"
@@ -452,9 +451,7 @@ def scrape_fuels():
         print(f"🔎 Hakee {name} (Stooq)")
 
         try:
-            # =============================
-            # ✅ LAST (intraday)
-            # =============================
+            # ✅ LAST
             url_last = f"https://stooq.com/q/l/?s={symbol}&f=sd2t2ohlcv&h&e=csv"
             r_last = requests.get(url_last, headers=headers)
 
@@ -469,44 +466,32 @@ def scrape_fuels():
                     val = data[6]
                     last_price = None if val in ["", "N/D"] else val
 
-            # =============================
-            # ✅ CLOSE + PREV CLOSE (API KEY FIX)
-            # =============================
-            url_hist = (
-                f"https://stooq.com/q/d/l/?s={symbol}"
-                f"&d1={two_days_ago.strftime('%Y%m%d')}"
-                f"&d2={yesterday.strftime('%Y%m%d')}"
-                f"&i=d"
-                f"&apikey={API_KEY}"
-            )
+            # ✅ HIST (API KEY toimii nyt)
+            url_hist = f"https://stooq.com/q/d/l/?s={symbol}&d1={two_days_ago.strftime('%Y%m%d')}&d2={yesterday.strftime('%Y%m%d')}&i=d&apikey={API_KEY}"
+
+            print("HIST URL:", url_hist)
 
             r_hist = requests.get(url_hist, headers=headers)
+
+            if not r_hist.text.strip():
+                print(f"❌ {name} EMPTY RESPONSE")
 
             lines_hist = [line for line in r_hist.text.splitlines() if line.strip()]
 
             close_price = None
             prev_close = None
 
-            # CSV muodossa:
-            # Date,Open,High,Low,Close,Volume
-
             if len(lines_hist) >= 2:
                 last_row = lines_hist[-1].split(",")
-
                 if len(last_row) > 4:
-                    val = last_row[4]
-                    close_price = None if val in ["", "N/D"] else val
+                    close_price = last_row[4]
 
             if len(lines_hist) >= 3:
                 prev_row = lines_hist[-2].split(",")
-
                 if len(prev_row) > 4:
-                    val = prev_row[4]
-                    prev_close = None if val in ["", "N/D"] else val
+                    prev_close = prev_row[4]
 
-            # =============================
-            # ✅ CONVERSIONS
-            # =============================
+            # ✅ convert
             def to_float(x):
                 try:
                     return float(x)
