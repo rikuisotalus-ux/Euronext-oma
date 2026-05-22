@@ -325,11 +325,11 @@ def calculate_spark_spread():
     # =============================
     # ✅ HAE GAS
     # =============================
-    fuels["Price"] = pd.to_numeric(fuels["Price"], errors="coerce")
+    fuels["Last"] = pd.to_numeric(fuels["Last"], errors="coerce")
 
     gas_row = fuels[fuels["Product"] == "NATGAS"]
 
-    if gas_row.empty or pd.isna(gas_row["Price"].iloc[0]):
+    if gas_row.empty or pd.isna(gas_row["Last"].iloc[0]):
         print("⚠️ Gas price puuttuu")
         return
 
@@ -377,7 +377,7 @@ def calculate_dark_spread():
     # =============================
     # ✅ HAE COAL + CO2
     # =============================
-    fuels["Price"] = pd.to_numeric(fuels["Price"], errors="coerce")
+    fuels["Last"] = pd.to_numeric(fuels["Last"], errors="coerce")
 
     coal_row = fuels[fuels["Product"] == "COAL"]
     co2_row = fuels[fuels["Product"] == "CO2"]
@@ -386,8 +386,8 @@ def calculate_dark_spread():
         print("⚠️ Coal tai CO2 puuttuu")
         return
 
-    coal_price = coal_row["Price"].iloc[0]
-    co2_price = co2_row["Price"].iloc[0]
+    coal_price = coal_row["Last"].iloc[0]
+    co2_price = co2_row["Last"].iloc[0]
 
     if pd.isna(coal_price) or pd.isna(co2_price):
         print("⚠️ Coal/CO2 arvo puuttuu")
