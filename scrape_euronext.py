@@ -420,7 +420,6 @@ def scrape_fuels():
 
     import requests
     import csv
-    import html
     import os
     from datetime import datetime, timedelta
 
@@ -452,38 +451,25 @@ def scrape_fuels():
         print(f"🔎 Hakee {name} (Stooq)")
 
         try:
-            # ✅ MÄÄRITÄ URLIT ENSIN (tärkein fix)
-            url_last = "https://stooq.com/q/l/?s=" + symbol + "&f=sd2t2ohlcv&h&e=csv"
-
-            url_hist = "https://stooq.com/q/d/l/?s=" + symbol + \
-                       "&d1=" + two_days_ago.strftime('%Y%m%d') + \
-                       "&d2=" + yesterday.strftime('%Y%m%d') + \
-                       "&i=d" + \
-                       "&apikey=" + API_KEY
-
-            # ✅ DEBUG
-          
-
-            print("RAW HIST URL:", url_hist)
-
-            url_hist = html.unescape(url_hist)
-            url_last = html.unescape(url_last)
-
-            print("FINAL HIST URL:", url_hist)
-
-
             # =============================
-            # ✅ REQUESTS
+            # ✅ LAST (PARAMS FIX)
             # =============================
-            r_last = requests.get(url_last, headers=headers)
-            r_hist = requests.get(url_hist, headers=headers)
+            params_last = {
+                "s": symbol,
+                "f": "sd2t2ohlcv",
+                "h": "",
+                "e": "csv"
+            }
 
-            # =============================
-            # ✅ LAST
-            # =============================
+            r_last = requests.get(
+                "https://stooq.com/q/l/",
+                params=params_last,
+                headers=headers
+            )
+
             last_price = None
 
-            lines_last = [line for line in r_last.text.splitlines() if line.strip()]
+            lines_last = [l for l in r_last.text.splitlines() if l.strip()]
 
             if len(lines_last) >= 2:
                 data = lines_last[1].split(",")
@@ -493,12 +479,26 @@ def scrape_fuels():
                     last_price = None if val in ["", "N/D"] else val
 
             # =============================
-            # ✅ HIST
+            # ✅ HIST (PARAMS → EI &amp; BUGIA)
             # =============================
+            params_hist = {
+                "s": symbol,
+                "d1": two_days_ago.strftime("%Y%m%d"),
+                "d2": yesterday.strftime("%Y%m%d"),
+                "i": "d",
+                "apikey": API_KEY
+            }
+
+            r_hist = requests.get(
+                "https://stooq.com/q/d/l/",
+                params=params_hist,
+                headers=headers
+            )
+
             if not r_hist.text.strip():
                 print(f"❌ {name} EMPTY RESPONSE")
 
-            lines_hist = [line for line in r_hist.text.splitlines() if line.strip()]
+            lines_hist = [l for l in r_hist.text.splitlines() if l.strip()]
 
             close_price = None
             prev_close = None
@@ -514,7 +514,7 @@ def scrape_fuels():
                     prev_close = prev_row[4]
 
             # =============================
-            # ✅ CONVERSIONS
+            # ✅ CONVERSION
             # =============================
             def to_float(x):
                 try:
@@ -588,6 +588,7 @@ def scrape_fuels():
         writer.writerows(rows)
 
     print("✅ fuels (last + REAL close + trends) päivitetty")
+
 
 
 
