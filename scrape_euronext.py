@@ -475,8 +475,8 @@ def scrape_fuels():
             if len(lines_last) >= 2:
                 data = lines_last[1].split(",")
 
-                if len(data) > 6:
-                    val = data[6]
+                if len(data) > 4:
+                    val = data[4]
                     last_price = None if val in ["", "N/D"] else val
 
             # =============================
