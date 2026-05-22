@@ -461,13 +461,15 @@ def scrape_fuels():
                        "&apikey=" + API_KEY
 
             # ✅ DEBUG
+           import html
+
             print("RAW HIST URL:", url_hist)
 
-            # ✅ 🔥 PAKKO FIX
-            url_hist = url_hist.replace("&amp;", "&")
-            url_last = url_last.replace("&amp;", "&")
+            url_hist = html.unescape(url_hist)
+            url_last = html.unescape(url_last)
 
             print("FINAL HIST URL:", url_hist)
+
 
             # =============================
             # ✅ REQUESTS
