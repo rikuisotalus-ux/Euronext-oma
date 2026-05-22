@@ -435,7 +435,7 @@ def scrape_fuels():
 
     SYMBOLS = {
         "WTI_OIL": "cl.f",
-        "BRENT_OIL": "bf.f",  # ✅ korjattu!
+        "BRENT_OIL": "bf.f",
         "NATGAS": "tg.f",
         "CO2": "ev.f",
         "COAL": "lu.f"
@@ -449,13 +449,29 @@ def scrape_fuels():
     for name, symbol in SYMBOLS.items():
 
         print(f"🔎 Hakee {name} (Stooq)")
-        print("FINAL HIST URL:", url_hist)
 
         try:
-            # ✅ LAST
+            # ✅ MÄÄRITÄ URLIT ENSIN (tärkein fix)
             url_last = "https://stooq.com/q/l/?s=" + symbol + "&f=sd2t2ohlcv&h&e=csv"
-            r_last = requests.get(url_last, headers=headers)
 
+            url_hist = "https://stooq.com/q/d/l/?s=" + symbol + \
+                       "&d1=" + two_days_ago.strftime('%Y%m%d') + \
+                       "&d2=" + yesterday.strftime('%Y%m%d') + \
+                       "&i=d" + \
+                       "&apikey=" + API_KEY
+
+            # ✅ DEBUG (nyt toimii)
+            print("FINAL HIST URL:", url_hist)
+
+            # =============================
+            # ✅ REQUESTS
+            # =============================
+            r_last = requests.get(url_last, headers=headers)
+            r_hist = requests.get(url_hist, headers=headers)
+
+            # =============================
+            # ✅ LAST
+            # =============================
             last_price = None
 
             lines_last = [line for line in r_last.text.splitlines() if line.strip()]
@@ -467,19 +483,9 @@ def scrape_fuels():
                     val = data[6]
                     last_price = None if val in ["", "N/D"] else val
 
-            # ✅ HIST (API KEY toimii nyt)
-           
-            url_hist = "https://stooq.com/q/d/l/?s=" + symbol + \
-                       "&d1=" + two_days_ago.strftime('%Y%m%d') + \
-                       "&d2=" + yesterday.strftime('%Y%m%d') + \
-                       "&i=d" + \
-                       "&apikey=" + API_KEY
-
-
-            print("HIST URL:", url_hist)
-
-            r_hist = requests.get(url_hist, headers=headers)
-
+            # =============================
+            # ✅ HIST
+            # =============================
             if not r_hist.text.strip():
                 print(f"❌ {name} EMPTY RESPONSE")
 
@@ -498,7 +504,9 @@ def scrape_fuels():
                 if len(prev_row) > 4:
                     prev_close = prev_row[4]
 
-            # ✅ convert
+            # =============================
+            # ✅ CONVERSIONS
+            # =============================
             def to_float(x):
                 try:
                     return float(x)
@@ -531,20 +539,6 @@ def scrape_fuels():
 
         except Exception as e:
             print(f"⚠️ {name} fail: {e}")
-
-    # =============================
-    # ✅ FALLBACK
-    # =============================
-    if not rows:
-        print("❌ fuels ei saatu – fallback")
-
-        rows = [
-            ["WTI_OIL", "cl.f", None, None, None, None, None, today],
-            ["BRENT_OIL", "cb.f", None, None, None, None, None, today],
-            ["NATGAS", "tg.f", None, None, None, None, None, today],
-            ["CO2", "ev.f", None, None, None, None, None, today],
-            ["COAL", "lu.f", None, None, None, None, None, today],
-        ]
 
     # =============================
     # ✅ WRITE CSV
@@ -585,6 +579,7 @@ def scrape_fuels():
         writer.writerows(rows)
 
     print("✅ fuels (last + REAL close + trends) päivitetty")
+
 
 
 def generate_market_analysis():
