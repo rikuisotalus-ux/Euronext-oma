@@ -446,16 +446,14 @@ def scrape_fuels():
         "Accept": "text/csv"
     }
 
-    url_hist = url_hist.replace("&amp;", "&")
-    url_last = url_last.replace("&amp;", "&")
-
     for name, symbol in SYMBOLS.items():
 
         print(f"🔎 Hakee {name} (Stooq)")
+        print("FINAL HIST URL:", url_hist)
 
         try:
             # ✅ LAST
-            url_last = f"https://stooq.com/q/l/?s={symbol}&f=sd2t2ohlcv&h&e=csv"
+            url_last = "https://stooq.com/q/l/?s=" + symbol + "&f=sd2t2ohlcv&h&e=csv"
             r_last = requests.get(url_last, headers=headers)
 
             last_price = None
@@ -470,7 +468,13 @@ def scrape_fuels():
                     last_price = None if val in ["", "N/D"] else val
 
             # ✅ HIST (API KEY toimii nyt)
-            url_hist = f"https://stooq.com/q/d/l/?s={symbol}&d1={two_days_ago.strftime('%Y%m%d')}&d2={yesterday.strftime('%Y%m%d')}&i=d&apikey={API_KEY}"
+           
+            url_hist = "https://stooq.com/q/d/l/?s=" + symbol + \
+                       "&d1=" + two_days_ago.strftime('%Y%m%d') + \
+                       "&d2=" + yesterday.strftime('%Y%m%d') + \
+                       "&i=d" + \
+                       "&apikey=" + API_KEY
+
 
             print("HIST URL:", url_hist)
 
