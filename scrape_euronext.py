@@ -459,7 +459,7 @@ def scrape_fuels():
             close_price = None
             prev_close = None
 
-            lines = r_hist.text.splitlines()
+            lines = [line for line in r_hist.text.splitlines() if line.strip()]
 
             
             if len(lines) >= 2:
