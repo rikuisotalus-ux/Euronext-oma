@@ -504,15 +504,21 @@ def scrape_fuels():
             close_price = None
             prev_close = None
 
+          
+
             if len(lines_hist) >= 2:
                 last_row = lines_hist[-1].split(",")
                 if len(last_row) > 4:
                     close_price = last_row[4]
-
+            
+            # ✅ fallback: jos ei ole edellistä päivää
             if len(lines_hist) >= 3:
                 prev_row = lines_hist[-2].split(",")
                 if len(prev_row) > 4:
                     prev_close = prev_row[4]
+            else:
+                prev_close = close_price
+
 
             # =============================
             # ✅ CONVERSION
