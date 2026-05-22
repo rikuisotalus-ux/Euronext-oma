@@ -461,12 +461,16 @@ def scrape_fuels():
 
             lines = r_hist.text.splitlines()
 
-            if len(lines) >= 3:
+            
+            if len(lines) >= 2:
                 last_row = lines[-1].split(",")
-                prev_row = lines[-2].split(",")
 
-                close_price = last_row[4] or None
-                prev_close = prev_row[4] or None
+                close_price = last_row[4] if len(last_row) > 4 else None
+
+                if len(lines) >= 3:
+                    prev_row = lines[-2].split(",")
+                    prev_close = prev_row[4] if len(prev_row) > 4 else None
+
 
             # =============================
             # ✅ CONVERSIONS
