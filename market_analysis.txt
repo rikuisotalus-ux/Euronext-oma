@@ -20,6 +20,11 @@ Suurimmat laskijat:
 Viikkotrendi: markkina on keskimäärin nousutrendissä.
 
 
+Fuel Market
+------------------------------
+Ei fuel insight dataa.
+
+
 Spark Spread (Gas-based)
 ------------------------------
 Spark Spread (Power - Gas)
