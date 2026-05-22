@@ -420,6 +420,7 @@ def scrape_fuels():
 
     import requests
     import csv
+    import html
     import os
     from datetime import datetime, timedelta
 
@@ -461,7 +462,7 @@ def scrape_fuels():
                        "&apikey=" + API_KEY
 
             # ✅ DEBUG
-           import html
+          
 
             print("RAW HIST URL:", url_hist)
 
