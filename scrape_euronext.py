@@ -434,12 +434,13 @@ def scrape_fuels():
     rows = []
 
     SYMBOLS = {
-        "WTI_OIL": "cl.f",
-        "BRENT_OIL": "bf.f",
-        "NATGAS": "tg.f",
-        "CO2": "ev.f",
-        "COAL": "lu.f"
+        "WTI_OIL": "cl",
+        "BRENT_OIL": "brn",
+        "NATGAS": "ng",
+        "CO2": "co2",
+        "COAL": "coal"
     }
+
 
     headers = {
         "User-Agent": "Mozilla/5.0",
