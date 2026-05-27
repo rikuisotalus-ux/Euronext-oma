@@ -4,13 +4,13 @@ Coal price: 129.3
 CO2 price: 78.03
 
 ProductCode  Settl.  DarkSpread
-   NSBQ1-27   79.95     -127.38
- NSBMNOV-26   77.45     -129.88
-   NSBQ4-26   74.88     -132.45
- NSBMMAY-26   73.93     -133.40
-   NSBQ1-28   68.50     -138.83
- NSBMSEP-26   63.70     -143.63
- NSBMOCT-26   62.72     -144.61
- NSBMJUN-26   57.35     -149.98
-   NSBQ3-26   55.68     -151.65
- NSBMAUG-26   55.00     -152.33
+   NSBQ1-27   78.70     -128.63
+ NSBMNOV-26   76.50     -130.83
+   NSBQ4-26   73.28     -134.05
+ NSBMMAY-26   72.92     -134.41
+   NSBQ1-28   68.05     -139.28
+ NSBMOCT-26   62.28     -145.05
+ NSBMSEP-26   61.95     -145.38
+ NSBMJUN-26   56.22     -151.11
+   NSBQ3-26   54.05     -153.28
+ NSBMAUG-26   53.05     -154.28
