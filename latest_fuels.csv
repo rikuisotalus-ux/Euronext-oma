@@ -1,6 +1,6 @@
 Product,Symbol,Last,Close,PrevClose,IntradayChange,DailyChange,Date
-WTI_OIL,cl.f,89.5,,,,,2026-05-27
-BRENT_OIL,cb.f,93.01,,,,,2026-05-27
+WTI_OIL,cl.f,89.41,,,,,2026-05-27
+BRENT_OIL,cb.f,92.98,,,,,2026-05-27
 NATGAS,tg.f,47.637,,,,,2026-05-27
 CO2,ev.f,78.03,,,,,2026-05-27
 COAL,lu.f,129.3,,,,,2026-05-27
