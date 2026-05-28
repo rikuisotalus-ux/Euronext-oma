@@ -8,9 +8,9 @@ Pohjoismaiset sähköfutuurit liikkuivat tänään vaihtelevasti.
 Lähituote HLBY-27 -1.75 EUR/MWh (+0.17).
 
 Suurimmat nousijat:
-- HLBQ4-26: +0.55
-- HLBMAUG-26: +0.36
-- HLBY-27: +0.17
+- NSBMJUN-26: +3.05
+- NSBMJUN-26: +3.05
+- NSBMJUN-26: +3.05
 
 Suurimmat laskijat:
 - NSBMAUG-26: -1.95
@@ -32,16 +32,16 @@ Spark Spread (Power - Gas)
 Gas price: 46.525
 
 ProductCode  Settl.  SparkSpread
-   NSBQ1-27   78.70       32.175
- NSBMNOV-26   76.50       29.975
-   NSBQ4-26   73.28       26.755
- NSBMMAY-26   72.92       26.395
-   NSBQ1-28   68.05       21.525
- NSBMOCT-26   62.28       15.755
- NSBMSEP-26   61.95       15.425
- NSBMJUN-26   56.22        9.695
-   NSBQ3-26   54.05        7.525
- NSBMAUG-26   53.05        6.525
+   NSBQ1-27   79.80       33.275
+ NSBMNOV-26   77.72       31.195
+   NSBQ4-26   74.95       28.425
+ NSBMMAY-26   73.90       27.375
+   NSBQ1-28   68.50       21.975
+ NSBMSEP-26   64.10       17.575
+ NSBMOCT-26   64.00       17.475
+ NSBMJUN-26   59.27       12.745
+   NSBQ3-26   56.25        9.725
+ NSBMAUG-26   54.80        8.275
 
 Dark Spread (Coal-based)
 ------------------------------
@@ -51,13 +51,13 @@ Coal price: 129.55
 CO2 price: 78.72
 
 ProductCode  Settl.  DarkSpread
-   NSBQ1-27   78.70     -129.57
- NSBMNOV-26   76.50     -131.77
-   NSBQ4-26   73.28     -134.99
- NSBMMAY-26   72.92     -135.35
-   NSBQ1-28   68.05     -140.22
- NSBMOCT-26   62.28     -145.99
- NSBMSEP-26   61.95     -146.32
- NSBMJUN-26   56.22     -152.05
-   NSBQ3-26   54.05     -154.22
- NSBMAUG-26   53.05     -155.22
+   NSBQ1-27   79.80     -128.47
+ NSBMNOV-26   77.72     -130.55
+   NSBQ4-26   74.95     -133.32
+ NSBMMAY-26   73.90     -134.37
+   NSBQ1-28   68.50     -139.77
+ NSBMSEP-26   64.10     -144.17
+ NSBMOCT-26   64.00     -144.27
+ NSBMJUN-26   59.27     -149.00
+   NSBQ3-26   56.25     -152.02
+ NSBMAUG-26   54.80     -153.47
