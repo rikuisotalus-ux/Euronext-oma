@@ -1,15 +1,15 @@
 Spark Spread (Power - Gas)
 
-Gas price: 46.936
+Gas price: 45.924
 
 ProductCode  Settl.  SparkSpread
-   NSBQ1-27   81.20       34.264
- NSBMNOV-26   79.33       32.394
-   NSBQ4-26   76.70       29.764
- NSBMMAY-26   76.00       29.064
-   NSBQ1-28   68.50       21.564
- NSBMSEP-26   66.00       19.064
- NSBMOCT-26   65.41       18.474
- NSBMJUN-26   62.50       15.564
-   NSBQ3-26   58.48       11.544
- NSBMAUG-26   57.30       10.364
+   NSBQ1-27   81.20       35.276
+ NSBMNOV-26   79.33       33.406
+   NSBQ4-26   76.70       30.776
+ NSBMMAY-26   76.00       30.076
+   NSBQ1-28   68.50       22.576
+ NSBMSEP-26   66.00       20.076
+ NSBMOCT-26   65.41       19.486
+ NSBMJUN-26   62.50       16.576
+   NSBQ3-26   58.48       12.556
+ NSBMAUG-26   57.30       11.376
