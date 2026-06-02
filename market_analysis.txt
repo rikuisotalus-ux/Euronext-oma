@@ -8,14 +8,14 @@ Pohjoismaiset sähköfutuurit liikkuivat tänään vaihtelevasti.
 Lähituote HLBY-27 -2.00 EUR/MWh (+0.00).
 
 Suurimmat nousijat:
-- HLBY-27: +0.00
-- HLBY-27: +0.00
-- HLBY-27: +0.00
+- HLBMJUN-26: +1.66
+- HLBMJUN-26: +1.66
+- HLBMJUN-26: +1.66
 
 Suurimmat laskijat:
-- HLBY-27: +0.00
-- HLBY-27: +0.00
-- HLBY-27: +0.00
+- NSBMAUG-26: -1.92
+- NSBMAUG-26: -1.92
+- NSBMAUG-26: -1.92
 
 Viikkotrendi: markkina on keskimäärin nousutrendissä.
 
@@ -32,16 +32,16 @@ Spark Spread (Power - Gas)
 Gas price: 48.984
 
 ProductCode  Settl.  SparkSpread
- NSBMDEC-26   88.60       39.616
-   NSBQ1-27   83.58       34.596
- NSBMNOV-26   82.28       33.296
-   NSBQ4-26   79.40       30.416
-   NSBQ1-28   68.78       19.796
- NSBMSEP-26   68.50       19.516
- NSBMOCT-26   67.50       18.516
- NSBMJUN-26   67.00       18.016
-   NSBQ3-26   61.25       12.266
- NSBMAUG-26   60.37       11.386
+ NSBMDEC-26   87.21       38.226
+   NSBQ1-27   83.25       34.266
+ NSBMNOV-26   81.53       32.546
+   NSBQ4-26   78.74       29.756
+   NSBQ1-28   68.95       19.966
+ NSBMSEP-26   67.10       18.116
+ NSBMOCT-26   67.00       18.016
+ NSBMJUN-26   66.00       17.016
+   NSBQ3-26   59.53       10.546
+ NSBMAUG-26   58.45        9.466
 
 Dark Spread (Coal-based)
 ------------------------------
@@ -51,13 +51,13 @@ Coal price: 137.85
 CO2 price: 79.17
 
 ProductCode  Settl.  DarkSpread
- NSBMDEC-26   88.60     -128.42
-   NSBQ1-27   83.58     -133.44
- NSBMNOV-26   82.28     -134.74
-   NSBQ4-26   79.40     -137.62
-   NSBQ1-28   68.78     -148.24
- NSBMSEP-26   68.50     -148.52
- NSBMOCT-26   67.50     -149.52
- NSBMJUN-26   67.00     -150.02
-   NSBQ3-26   61.25     -155.77
- NSBMAUG-26   60.37     -156.65
+ NSBMDEC-26   87.21     -129.81
+   NSBQ1-27   83.25     -133.77
+ NSBMNOV-26   81.53     -135.49
+   NSBQ4-26   78.74     -138.28
+   NSBQ1-28   68.95     -148.07
+ NSBMSEP-26   67.10     -149.92
+ NSBMOCT-26   67.00     -150.02
+ NSBMJUN-26   66.00     -151.02
+   NSBQ3-26   59.53     -157.49
+ NSBMAUG-26   58.45     -158.57
