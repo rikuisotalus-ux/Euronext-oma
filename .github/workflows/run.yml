@@ -3,9 +3,7 @@ name: Euronext API Scraper
 on:
   schedule:
     - cron: "0 0 * * *"
-    - cron: "0 8 * * *"
-    - cron: "0 12 * * *"
-    - cron: "0 14 * * *"
+   
   workflow_dispatch:
 
 
