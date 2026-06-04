@@ -5,17 +5,17 @@ Power Market Summary
 ------------------------------
 Päivittäinen markkinakatsaus:
 Pohjoismaiset sähköfutuurit liikkuivat tänään vaihtelevasti.
-Lähituote HLBY-27 -1.80 EUR/MWh (+0.20).
+Lähituote HLBY-27 -1.80 EUR/MWh (+0.00).
 
 Suurimmat nousijat:
-- NSBMJUN-26: +2.88
-- NSBMJUN-26: +2.88
-- HLBMJUN-26: +2.84
+- HLBY-27: +0.00
+- HLBY-28: +0.00
+- HLBY-29: +0.00
 
 Suurimmat laskijat:
-- NSBMAUG-26: -0.82
-- NSBMAUG-26: -0.82
-- NSBMSEP-26: -0.75
+- HLBY-27: +0.00
+- HLBY-28: +0.00
+- HLBY-29: +0.00
 
 Viikkotrendi: markkina on keskimäärin nousutrendissä.
 
@@ -29,35 +29,35 @@ Spark Spread (Gas-based)
 ------------------------------
 Spark Spread (Power - Gas)
 
-Gas price: 47.626
+Gas price: 48.932
 
 ProductCode  Settl.  SparkSpread
- NSBMDEC-26   88.80       41.174
-   NSBQ1-27   84.96       37.334
- NSBMNOV-26   83.50       35.874
-   NSBQ4-26   80.80       33.174
-   NSBQ1-28   69.15       21.524
- NSBMOCT-26   69.00       21.374
- NSBMJUN-26   68.88       21.254
- NSBMSEP-26   67.75       20.124
-   NSBQ3-26   60.85       13.224
- NSBMAUG-26   59.55       11.924
+ NSBMDEC-26   88.80       39.868
+   NSBQ1-27   84.96       36.028
+ NSBMNOV-26   83.50       34.568
+   NSBQ4-26   80.80       31.868
+   NSBQ1-28   69.15       20.218
+ NSBMOCT-26   69.00       20.068
+ NSBMJUN-26   68.88       19.948
+ NSBMSEP-26   67.75       18.818
+   NSBQ3-26   60.85       11.918
+ NSBMAUG-26   59.55       10.618
 
 Dark Spread (Coal-based)
 ------------------------------
 Dark Spread (Power - Coal - CO2)
 
-Coal price: 137.3
+Coal price: 139.0
 CO2 price: 79.5
 
 ProductCode  Settl.  DarkSpread
- NSBMDEC-26   88.80     -128.00
-   NSBQ1-27   84.96     -131.84
- NSBMNOV-26   83.50     -133.30
-   NSBQ4-26   80.80     -136.00
-   NSBQ1-28   69.15     -147.65
- NSBMOCT-26   69.00     -147.80
- NSBMJUN-26   68.88     -147.92
- NSBMSEP-26   67.75     -149.05
-   NSBQ3-26   60.85     -155.95
- NSBMAUG-26   59.55     -157.25
+ NSBMDEC-26   88.80     -129.70
+   NSBQ1-27   84.96     -133.54
+ NSBMNOV-26   83.50     -135.00
+   NSBQ4-26   80.80     -137.70
+   NSBQ1-28   69.15     -149.35
+ NSBMOCT-26   69.00     -149.50
+ NSBMJUN-26   68.88     -149.62
+ NSBMSEP-26   67.75     -150.75
+   NSBQ3-26   60.85     -157.65
+ NSBMAUG-26   59.55     -158.95
