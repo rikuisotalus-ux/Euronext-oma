@@ -1,6 +1,6 @@
 Product,Symbol,Last,Close,PrevClose,IntradayChange,DailyChange,Date
-WTI_OIL,cl.f,"""0"")).join("""");if(x.startsWith(t))break;n++}const r=await fetch(""/__verify""",,,,,2026-06-06
-BRENT_OIL,cb.f,92.89,,,,,2026-06-06
-NATGAS,tg.f,48.831,,,,,2026-06-06
-CO2,ev.f,"""0"")).join("""");if(x.startsWith(t))break;n++}const r=await fetch(""/__verify""",,,,,2026-06-06
-COAL,lu.f,"""0"")).join("""");if(x.startsWith(t))break;n++}const r=await fetch(""/__verify""",,,,,2026-06-06
+WTI_OIL,cl.f,"""0"")).join("""");if(x.startsWith(t))break;n++}const r=await fetch(""/__verify""",,,,,2026-06-07
+BRENT_OIL,cb.f,"""0"")).join("""");if(x.startsWith(t))break;n++}const r=await fetch(""/__verify""",,,,,2026-06-07
+NATGAS,tg.f,"""0"")).join("""");if(x.startsWith(t))break;n++}const r=await fetch(""/__verify""",,,,,2026-06-07
+CO2,ev.f,"""0"")).join("""");if(x.startsWith(t))break;n++}const r=await fetch(""/__verify""",,,,,2026-06-07
+COAL,lu.f,"""0"")).join("""");if(x.startsWith(t))break;n++}const r=await fetch(""/__verify""",,,,,2026-06-07
