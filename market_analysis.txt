@@ -5,17 +5,17 @@ Power Market Summary
 ------------------------------
 Päivittäinen markkinakatsaus:
 Pohjoismaiset sähköfutuurit liikkuivat tänään vaihtelevasti.
-Lähituote HLBY-27 -1.82 EUR/MWh (+0.00).
+Lähituote HLBY-27 -1.85 EUR/MWh (-0.03).
 
 Suurimmat nousijat:
-- HLBY-27: +0.00
-- HLBY-28: +0.00
-- HLBY-29: +0.00
+- HLBMJUN-26: +2.19
+- HLBMJUN-26: +2.19
+- HLBMJUN-26: +2.19
 
 Suurimmat laskijat:
-- HLBY-27: +0.00
-- HLBY-28: +0.00
-- HLBY-29: +0.00
+- NSBQ2-28: -0.57
+- NSBQ2-28: -0.57
+- NSBQ2-28: -0.57
 
 Viikkotrendi: markkina on keskimäärin laskutrendissä.
 
