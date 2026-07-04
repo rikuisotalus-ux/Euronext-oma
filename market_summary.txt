@@ -4,12 +4,12 @@ Lähituote HLBY-27 1.25 EUR/MWh (+0.00).
 
 Suurimmat nousijat:
 - NSBMNOV-26: +3.15
+- NSBMNOV-26: +3.15
 - NSBMOCT-26: +3.15
-- NSBMAUG-26: +2.64
 
 Suurimmat laskijat:
 - HLBMOCT-26: -0.65
+- HLBMOCT-26: -0.65
 - NSBQ1-28: -0.55
-- HLBMSEP-26: -0.50
 
 Viikkotrendi: markkina on keskimäärin nousutrendissä.
