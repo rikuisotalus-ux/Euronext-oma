@@ -1,6 +1,6 @@
 Product,Symbol,Last,Close,PrevClose,IntradayChange,DailyChange,Date
-WTI_OIL,cl.f,,,,,,2026-08-23
-BRENT_OIL,cb.f,,,,,,2026-08-23
-NATGAS,tg.f,,,,,,2026-08-23
-CO2,ev.f,,,,,,2026-08-23
-COAL,lu.f,,,,,,2026-08-23
+WTI_OIL,cl.f,,,,,,2026-08-24
+BRENT_OIL,cb.f,,,,,,2026-08-24
+NATGAS,tg.f,,,,,,2026-08-24
+CO2,ev.f,,,,,,2026-08-24
+COAL,lu.f,,,,,,2026-08-24
