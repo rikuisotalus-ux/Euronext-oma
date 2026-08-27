@@ -19,3 +19,8 @@ BRENT_OIL,cb.f,"""0"")).join("""");if(x.startsWith(t))break;n++}const r=await fe
 NATGAS,tg.f,"""0"")).join("""");if(x.startsWith(t))break;n++}const r=await fetch(""/__verify""",,,,,2026-06-08
 CO2,ev.f,"""0"")).join("""");if(x.startsWith(t))break;n++}const r=await fetch(""/__verify""",,,,,2026-06-08
 COAL,lu.f,"""0"")).join("""");if(x.startsWith(t))break;n++}const r=await fetch(""/__verify""",,,,,2026-06-08
+WTI_OIL,cl.f,,,,,,2026-08-27
+BRENT_OIL,cb.f,,,,,,2026-08-27
+NATGAS,tg.f,,,,,,2026-08-27
+CO2,ev.f,,,,,,2026-08-27
+COAL,lu.f,,,,,,2026-08-27
